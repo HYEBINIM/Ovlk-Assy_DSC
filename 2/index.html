@@ -18,7 +18,7 @@
                 <div class = "lh_frame">
                     <span class = "frame_title">PRODUCT IMAGE LH</span>
 
-                    <img src = "/img/assy1_lh.png">
+                    <img src = "/img/assy1_lh.png" id = "img_lh">
 
                     <div class = "data_area">
                         <div class = "part">
@@ -98,7 +98,7 @@
                 <div class = "rh_frame">
                     <span class = "frame_title">PRODUCT IMAGE RH</span>
 
-                    <img src = "/img/assy1_rh.png">
+                    <img src = "/img/assy1_rh.png" id = "img_rh">
 
                     <div class = "data_area">
                         <div class = "part">
@@ -374,6 +374,10 @@
                         
                         part_code_lh = part_code_all_lh.slice(0, 5) + "-" + part_code_all_lh.slice(5);
                         part_code_rh = part_code_all_rh.slice(0, 5) + "-" + part_code_all_rh.slice(5);
+
+                        // img switching process
+                        $("#img_lh").attr("src", "/img/" + part_code_lh + ".png");
+                        $("#img_rh").attr("src", "/img/" + part_code_rh + ".png");
 
                         $("#part_code_lh").text(part_code_lh);
                         $("#part_code_rh").text(part_code_rh);
