@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부품 리스트</title>
+    <link rel="stylesheet" href="/css/part.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <form id="part-form">
+        <div class="wrapper">
+            <div class="left-panel">
+                <form id="part-form"> <!-- Form 태그 추가 -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>품번</th>
+                                <th>품명</th>
+                                <th>옵션1</th>
+                                <th>PART_COUNT</th>
+                                <th>OPTION_BRK</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                <td>{{ row[0] }}</td> <!-- data0 -->
+                                <td>{{ row[1] }}</td> <!-- data1 -->
+                                <td>{{ row[2] }}</td> <!-- data2 -->
+                                <td>{{ row[3] }}</td> <!-- data3 -->
+                                <td>
+                                    <input type="checkbox" name="option_brk_{{ loop.index }}" value="1" {% if row[4] == '1' %}checked{% endif %}>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="right-panel">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th colspan='2'>T/Q</th>
+                        </tr>
+                        <tr>
+                            <td><label for="min">MIN</label></td>
+                            <td><input type="text" id="min" name="min" value="{{ torque_data[0] }}"></td> <!-- min1 값 -->
+                        </tr>
+                        <tr>
+                            <td><label for="max">MAX</label></td>
+                            <td><input type="text" id="max" name="max" value="{{ torque_data[1] }}"></td> <!-- max1 값 -->
+                        </tr>
+                        <tr>
+                            <td><label for="unit">UNIT</label></td>
+                            <td><input type="text" id="unit" name="unit" value="{{ torque_data[2] }}"></td> <!-- contents1 값 -->
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn_save" id="btn_save">SAVE</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        $(document).ready(function() {
+            $('#btn_save').click(function() {
+                const formData = $('#part-form').serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/save_part_data",
+                    data: formData,
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function() {
+                        alert("데이터 저장에 실패했습니다.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
