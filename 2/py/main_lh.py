@@ -11,7 +11,7 @@ running = True
 # 데이터를 읽어올 plc DB
 main_db_config = {
     "host": "192.168.200.2",
-    "port": "3306",
+    "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
     "database": "dataset",
@@ -21,7 +21,7 @@ main_db_config = {
 # 모니터별로 관리할 assy 테이블이 있는 DB
 assy_db_config = {
     "host": "localhost",
-    "port": "3306",
+    "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
     "database": "dataset",

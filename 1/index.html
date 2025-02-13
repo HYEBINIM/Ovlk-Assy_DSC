@@ -414,28 +414,15 @@
                             $("#part_code_full_rh").text("북미");
                         }
 
-                        for(i = 1; i < dataLH.length; i++){
+                        // 볼트1, 볼트2 토크값 제외한 데이터 순회
+                        for(i = 1; i < dataLH.length - 2; i++){
                             let idLH = "data" + i + "_lh";
 
                             if(dataLH[i] == 1){
                                 if(i == 3){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 1},
-                                        success: function(bolt){
-                                            $("#" + idLH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idLH).text(dataLH[7]);
                                 }else if(i == 4){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 2},
-                                        success: function(bolt){
-                                            $("#" + idLH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idLH).text(dataLH[8]);
                                 }else{
                                     $("#" + idLH).text("OK");
                                 }
@@ -443,23 +430,9 @@
                                 $("#" + idLH).parent().css("background-color", "green");
                             }else if(dataLH[i] == 2){
                                 if(i == 3){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 1},
-                                        success: function(bolt){
-                                            $("#" + idLH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idLH).text(dataLH[7]);
                                 }else if(i == 4){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 2},
-                                        success: function(bolt){
-                                            $("#" + idLH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idLH).text(dataLH[8]);
                                 }else{
                                     $("#" + idLH).text("NG");
                                 }
@@ -475,23 +448,9 @@
 
                             if(dataRH[i] == 1){
                                 if(i == 3){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 3},
-                                        success: function(bolt){
-                                            $("#" + idRH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idRH).text(dataRH[7]);
                                 }else if(i == 4){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 4},
-                                        success: function(bolt){
-                                            $("#" + idRH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idRH).text(dataRH[8]);
                                 }else{
                                     $("#" + idRH).text("OK");
                                 }
@@ -499,23 +458,9 @@
                                 $("#" + idRH).parent().css("background-color", "green");
                             }else if(dataRH[i] == 2){
                                 if(i == 3){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 3},
-                                        success: function(bolt){
-                                            $("#" + idRH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idRH).text(dataRH[7]);
                                 }else if(i == 4){
-                                    $.ajax({
-                                        url: "/api/get_bolt_val.php",
-                                        type: "POST",
-                                        data: {no: 4},
-                                        success: function(bolt){
-                                            $("#" + idRH).text(bolt);
-                                        }
-                                    });
+                                    $("#" + idRH).text(dataRH[8]);
                                 }else{
                                     $("#" + idRH).text("NG");
                                 }
@@ -531,7 +476,7 @@
                         if(dataLH[dataLH.length - 3] == 1){
                             $("#conclusion_lh").text("OK");
                             $("#conclusion_lh").parent().css("background-color", "green");
-                        }else if(dataLH[dataLH.length - 1] == 2){
+                        }else if(dataLH[dataLH.length - 3] == 2){
                             $("#conclusion_lh").text("NG");
                             $("#conclusion_lh").parent().css("background-color", "red");
                         }else{
@@ -542,7 +487,7 @@
                         if(dataRH[dataRH.length - 3] == 1){
                             $("#conclusion_rh").text("OK");
                             $("#conclusion_rh").parent().css("background-color", "green");
-                        }else if(dataRH[dataRH.length - 1] == 2){
+                        }else if(dataRH[dataRH.length - 3] == 2){
                             $("#conclusion_rh").text("NG");
                             $("#conclusion_rh").parent().css("background-color", "red");
                         }else{
