@@ -1,5 +1,5 @@
 <?php
-    $host = "localhost";
+    $host = "192.168.200.2:3306";
     $user = "server";
     $pw = "dltmxm1234";
     $db = "dataset";
@@ -7,29 +7,35 @@
     $conn = mysqli_connect($host, $user, $pw, $db);
     if($conn -> connect_error) die($conn -> connect_error);
 
-    $today = date('Y-m-d');
+    $query_lh = "SELECT lh_code, lh_count FROM index_code WHERE lh_code IS NOT NULL AND lh_code <> ''";
+    $query_rh = "SELECT rh_code, rh_count FROM index_code WHERE rh_code IS NOT NULL AND rh_code <> ''";
 
-    $query = sprintf("SELECT data0 FROM
-    (SELECT * FROM assy_lh
-    UNION ALL
-    SELECT * FROM assy_rh)
-    AS combined_tables
-    WHERE date = '%s'
-    ORDER BY time DESC", $today);
-    $result = mysqli_query($conn, $query);
-    if(!$result) die($conn -> error);
+    $result_lh = mysqli_query($conn, $query_lh);
+    if(!$result_lh) die($conn -> error);
 
-    $data = array();
-    while($record = mysqli_fetch_array($result)){
-        $part_code_arr = explode(chr(29), $record['DATA0']);
-        $part_code_all = substr($part_code_arr[2], 1);
-        $chunks = str_split($part_code_all, 5);
-        $part_code = implode("-", $chunks);
-        array_push($data, $part_code);
+    $result_rh = mysqli_query($conn, $query_rh);
+    if(!$result_rh) die($conn -> error);
+
+    $data_lh = array();
+    $data_rh = array();
+
+    $idx = 0;
+    while($record_lh = mysqli_fetch_array($result_lh)){
+        $data_lh[$idx]['code'] = $record_lh['lh_code'];
+        $data_lh[$idx]['count'] = $record_lh['lh_count'];
+        $idx++;
     }
 
-    $result -> close();
-    $conn -> close();
+    $idx = 0;
+    while($record_rh = mysqli_fetch_array($result_rh)){
+        $data_rh[$idx]['code'] = $record_rh['rh_code'];
+        $data_rh[$idx]['code'] = $record_rh['rh_count'];
+        $idx++;
+    }
+
+    $data = array();
+    array_push($data, $data_lh);
+    array_push($data, $data_rh);
 
     echo json_encode($data);
 ?>
