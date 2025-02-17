@@ -69,18 +69,18 @@ def read_plc_data():
 
         # column binding (dict)
         cols = {
-            "data3": "daTA1",
-            "data4": "daTA2",
-            "data5": "daTA3",
-            "data6": "daTA4",
-            "data7": "daTA5",
-            "data8": "daTA6"
+            "data3": "data1",
+            "data4": "data2",
+            "data5": "data3",
+            "data6": "data4",
+            "data7": "data5",
+            "data8": "data6"
         }
 
         # update data
         last_col = ""
         set_clause = []
-        for key, value in record_lh.items():
+        for key, value in record_rh.items():
             if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
                 if col_name:

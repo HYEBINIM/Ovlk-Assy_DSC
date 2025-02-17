@@ -78,7 +78,7 @@ def read_plc_data():
 
         # update data
         set_clause = []
-        for key, value in record_lh.items():
+        for key, value in record_rh.items():
             if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
                 if col_name:

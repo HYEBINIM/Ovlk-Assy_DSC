@@ -69,12 +69,12 @@ def scan():
                     
                     if dir == "LH":
                         table = "assy_lh"
-                        index_col = "lh_code"
+                        index_col = "data0"
                         jig_col = "data1"
                         row_write_id = 2
                     elif dir == "RH":
                         table = "assy_rh"
-                        index_col = "rh_code"
+                        index_col = "data2"
                         jig_col = "data3"
                         row_write_id = 6
                     else:
@@ -104,11 +104,12 @@ def scan():
                     cur = time.localtime()
                     cur_date = time.strftime("%Y-%m-%d", cur)
                     cur_time = time.strftime("%H:%M:%S", cur)
-                    
-                    query_select = f"SELECT id FROM index_code WHERE {index_col} = '{part_code}'"
-                    main_cursor.execute(query_select)
-                    index_record = main_cursor.fetchall()
-                    index = index_record[0]['id']
+
+                    query_index = f"SELECT {index_col}, {jig_col} FROM input1 WHERE id = 5"
+                    main_cursor.execute(query_index)
+                    index_record = main_cursor.fetchone()
+                    index = index_record[index_col]
+                    jig = index_record[jig_col]
                     
                     query_update_1 = f"UPDATE assy1read SET data1 = 1, contents1 = 12 WHERE id = {row_write_id}"
                     main_cursor.execute(query_update_1)
@@ -117,13 +118,8 @@ def scan():
                     query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
                     main_cursor.execute(query_update_2)
                     main_db.commit()
-                
-                    query_jig = f"SELECT {jig_col} FROM input1 WHERE id = 5"
-                    main_cursor.execute(query_jig)
-                    jig_record = main_cursor.fetchone()
-                    jig = jig_record[jig_col]
 
-                    query_insert = f"INSERT INTO {table} (date, time, data0, data9) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}')"
+                    query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                     assy_cursor.execute(query_insert)
                     assy_db.commit()
                     

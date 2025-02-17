@@ -8,7 +8,7 @@ from mysql.connector import Error
 # 지역 시간 모듈
 import time
 
-# 지그 번호를 읽어오고 스캔 검증, 스캔 로트 코드 등을 업데이트할 plc DB
+# 스캔 검증, 스캔 로트 코드 등을 업데이트할 plc DB
 main_db_config = {
     "host": "192.168.200.2",
     "port": 3306,
@@ -27,7 +27,7 @@ assy_db_config = {
     "charset": "utf8"
 }
 
-# 지그 번호를 가져올 조립 1차 PC의 DB
+# 인덱스와 지그 번호를 가져올 조립 1차 PC의 DB
 jig_db_config = {
     "host": "192.168.200.9",
     "port": 3306,
@@ -79,11 +79,9 @@ def scan():
                     
                     if dir == "LH":
                         table = "assy_lh"
-                        index_col = "lh_code"
                         row_write_id = 2
                     elif dir == "RH":
                         table = "assy_rh"
-                        index_col = "rh_code"
                         row_write_id = 6
                     else:
                         # LH, RH 구분이 되지 않는 경우 다시 스캔하도록 지시
@@ -118,22 +116,18 @@ def scan():
                     cur = time.localtime()
                     cur_date = time.strftime("%Y-%m-%d", cur)
                     cur_time = time.strftime("%H:%M:%S", cur)
-                    
-                    query_select = f"SELECT id FROM index_code WHERE {index_col} = '{part_code}'"
-                    main_cursor.execute(query_select)
-                    index_record = main_cursor.fetchall()
-                    index = index_record[0]['id']
-                    
+
+                    query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 = '{data}' ORDER BY date DESC, time DESC LIMIT 1"
+                    jig_cursor.execute(query_jig)
+                    jig_record = jig_cursor.fetchone()
+                    jig = jig_record['data9']
+                    index = jig_record['data10']
+
                     query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
                     main_cursor.execute(query_update)
                     main_db.commit()
 
-                    query_jig = f"SELECT data9 FROM {table} WHERE data0 = '{data}' ORDER BY date DESC, time DESC LIMIT 1"
-                    jig_cursor.execute(query_jig)
-                    jig_record = jig_cursor.fetchone()
-                    jig = jig_record['data9']
-
-                    query_insert = f"INSERT INTO {table} (date, time, data0, data9) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}')"
+                    query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                     assy_cursor.execute(query_insert)
                     assy_db.commit()
                     
