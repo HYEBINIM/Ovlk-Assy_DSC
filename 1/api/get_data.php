@@ -18,6 +18,9 @@
     $result_rh = mysqli_query($conn, $query_rh);
     if(!$result_rh) die($conn -> error);
 
+    $record_lh = mysqli_fetch_array($result_lh);
+    $record_rh = mysqli_fetch_array($result_rh);
+
     $part_code_arr_lh = explode(chr(29), $record_lh['DATA0']);
     $part_code_arr_rh = explode(chr(29), $record_rh['DATA0']);
     $part_code_lh = substr($part_code_arr_lh[2], 1);

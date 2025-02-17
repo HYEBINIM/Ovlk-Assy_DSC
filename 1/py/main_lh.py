@@ -14,8 +14,7 @@ main_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
@@ -69,43 +68,43 @@ def read_plc_data():
 
         # column binding (dict)
         cols = {
-            "DATA3": "DATA1",
-            "DATA4": "DATA2",
-            "DATA5": "DATA3",
-            "DATA6": "DATA4",
-            "DATA7": "DATA5",
-            "DATA8": "DATA6"
+            "data3": "data1",
+            "data4": "data2",
+            "data5": "data3",
+            "data6": "data4",
+            "data7": "data5",
+            "data8": "data6"
         }
 
         # update data
         last_col = ""
         set_clause = []
         for key, value in record_lh.items():
-            if "DATA" in key and key != "DATA0" and value is not None:
+            if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
                 if col_name:
                     set_clause.append(f"{col_name} = {value}")
                     last_col = col_name
-                    if col_name == "DATA6" and (value == '1' or value == '2'):
+                    if col_name == "data6" and (value == '1' or value == '2'):
                         # PC완료 업데이트 토글
                         global running
                         running = False
         
         if len(set_clause) > 0:
-            if last_col == "DATA3":
+            if last_col == "data3":
                 get_torque_query = "SELECT data2 FROM input1 WHERE id = 1"
                 main_cursor.execute(get_torque_query)
                 torque_record = main_cursor.fetchone()
                 torque = torque_record['data2']
 
-                set_clause.append(f"DATA7 = {torque}")
-            elif last_col == "DATA4":
+                set_clause.append(f"data7 = {torque}")
+            elif last_col == "data4":
                 get_torque_query = "SELECT data2 FROM input1 WHERE id = 1"
                 main_cursor.execute(get_torque_query)
                 torque_record = main_cursor.fetchone()
                 torque = torque_record['data2']
 
-                set_clause.append(f"DATA8 = {torque}")
+                set_clause.append(f"data8 = {torque}")
             
             update_query = f"UPDATE assy_lh SET date = '{cur_date}', time = '{cur_time}', {', '.join(set_clause)} WHERE id = {max_id}"
 
@@ -139,7 +138,7 @@ def check_new_data():
     if db.is_connected():
         print("Assy DB Connected... (For checking new INSERT)")
 
-    query = "SELECT DATA1, DATA2, DATA3, DATA4, DATA5, DATA6 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
+    query = "SELECT data1, data2, data3, data4, data5, data6 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
     cursor.execute(query)
     record = cursor.fetchone()
 

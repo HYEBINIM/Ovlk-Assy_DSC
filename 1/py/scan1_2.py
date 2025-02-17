@@ -14,8 +14,7 @@ main_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
@@ -108,12 +107,14 @@ def scan():
                     
                     query_select = f"SELECT id FROM index_code WHERE {index_col} = '{part_code}'"
                     main_cursor.execute(query_select)
-                    index_record = main_cursor.fetchone()
-                    index = index_record['id']
+                    index_record = main_cursor.fetchall()
+                    index = index_record[0]['id']
                     
                     query_update_1 = f"UPDATE assy1read SET data1 = 1, contents1 = 12 WHERE id = {row_write_id}"
-                    query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
                     main_cursor.execute(query_update_1)
+                    main_db.commit()
+
+                    query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
                     main_cursor.execute(query_update_2)
                     main_db.commit()
                 
@@ -122,7 +123,7 @@ def scan():
                     jig_record = main_cursor.fetchone()
                     jig = jig_record[jig_col]
 
-                    query_insert = f"INSERT INTO {table} (date, time, data0, data9) VALUES ('{cur_date}, '{cur_time}', '{data}', '{jig}')"
+                    query_insert = f"INSERT INTO {table} (date, time, data0, data9) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}')"
                     assy_cursor.execute(query_insert)
                     assy_db.commit()
                     

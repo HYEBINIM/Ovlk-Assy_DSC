@@ -15,8 +15,7 @@ main_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
@@ -70,22 +69,22 @@ def read_plc_data():
 
         # column binding (dict)
         cols = {
-            "DATA2": "DATA1",
-            "DATA3": "DATA2",
-            "DATA4": "DATA3",
-            "DATA5": "DATA4",
-            "DATA6": "DATA5",
-            "DATA9": "DATA6"
+            "data2": "data1",
+            "data3": "data2",
+            "data4": "data3",
+            "data5": "data4",
+            "data6": "data5",
+            "data9": "data6"
         }
 
         # update data
         set_clause = []
         for key, value in record_lh.items():
-            if "DATA" in key and key != "DATA0" and value is not None:
+            if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
                 if col_name:
                     set_clause.append(f"{col_name} = {value}")
-                    if col_name == "DATA6" and (value == '1' or value == '2'):
+                    if col_name == "data6" and (value == '1' or value == '2'):
                         # PC완료 업데이트 토글
                         global running
                         running = False
@@ -123,7 +122,7 @@ def check_new_data():
     if db.is_connected():
         print("Assy DB Connected... (For checking new INSERT)")
 
-    query = "SELECT DATA1, DATA2, DATA3, DATA4, DATA5, DATA6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    query = "SELECT data1, data2, data3, data4, data5, data6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
     cursor.execute(query)
     record = cursor.fetchone()
 
