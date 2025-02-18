@@ -285,7 +285,7 @@ img{
     height: 40px;
 
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr 3fr 1fr;
 
     /* margin-top: 4px; */
 
@@ -294,7 +294,7 @@ img{
     box-shadow: inset 2px 2px 2px white;
 }
 
-.part_no, .count{
+.idx, .dir, .part_no, .count{
     width: 100%;
     height: 100%;
 
@@ -303,7 +303,7 @@ img{
     align-items: center;
 }
 
-.part_no{
+.idx, .dir, .part_no{
     border: 1px solid rgba(0, 0, 0, 0.4);
 }
 
@@ -323,11 +323,12 @@ img{
 
     background-color: rgba(0, 0, 0, 0.15);
 
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .cnt_table{
-    width: 100%;
+    width: calc(100% + 17px);
     height: auto;
 
     border-collapse: collapse;
@@ -337,15 +338,21 @@ img{
     height: 30px;
 
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr 3fr 1fr;
 
     border-bottom: 1px solid black;
 
     background-color: white;
 }
 
-.cnt_table tr td:first-child{
+.cnt_table tr td:not(:last-child){
     border-right: 1px solid black;
+}
+
+.cnt_table tr td{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .reset, .auto{

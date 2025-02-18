@@ -120,6 +120,7 @@ def scan():
                     query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 = '{data}' ORDER BY date DESC, time DESC LIMIT 1"
                     jig_cursor.execute(query_jig)
                     jig_record = jig_cursor.fetchone()
+                    print(jig_record)
                     jig = jig_record['data9']
                     index = jig_record['data10']
 

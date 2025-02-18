@@ -179,11 +179,19 @@
                     <span class = "frame_title">COUNT</span>
 
                     <div class = "table_header">
-                        <div class = "part_no">
+                        <div class="idx">
+                            <span>Idx</span>
+                        </div>
+    
+                        <div class="dir">
+                            <span>Dir</span>
+                        </div>
+    
+                        <div class="part_no">
                             <span>Part No.</span>
                         </div>
-
-                        <div class = "count">
+    
+                        <div class="count">
                             <span>Count</span>
                         </div>
                     </div>
@@ -348,6 +356,7 @@
             $(document).ready(function(){
                 updateClock();
                 updateData();
+                updateCount();
             });       
 
             function updateClock(){
@@ -448,6 +457,23 @@
                         }else{
                             $("#conclusion_rh").text("");
                             $("#conclusion_rh").parent().css("background-color", "white");
+                        }
+                    }
+                });
+            }
+
+            function updateCount(){
+                $.ajax({
+                    url: "/api/get_count.php",
+                    type: "POST",
+                    success: function (result) {
+                        var count = JSON.parse(result);
+
+                        const countTable = $(".cnt_table");
+                        countTable.empty();
+
+                        for(i = 1; i < count.length; i++){
+                            countTable.append("<tr><td>" + count[i]['index'] + "</td><td>" + count[i]['dir'] + "</td><td>" + count[i]['code'] + "</td><td>" + count[i]['count'] + "</td></tr>");
                         }
                     }
                 });
