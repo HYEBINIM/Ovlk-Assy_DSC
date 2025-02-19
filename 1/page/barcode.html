@@ -12,146 +12,92 @@
 <body>
     <div class="wrapper">
         <div class="content">
-        <div class="lot">
-                <div class="item_title">업체코드</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">EO번호</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">서열코드</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">EO번호</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="date">
-                <div class="date_title">생산일자</div>
-                <div class="date_text">
-                    <input type="date" id="datePicker">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">부품4M</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">A or @</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">추적번호<br>(7~)</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">업체영역</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
-            <div class="lot">
-                <div class="item_title">Trailer</div>
-                <div class="item_text">
-                    <input type="text" id="lotInput" placeholder="값을 입력하세요" onfocus="this.select()">
-                </div>
-            </div>
+            <!-- [)>06VPB31P89311GX300SET250211G1A1A0000001AC00.000.0 -->
+            <table>
+                <tr>
+                    <th colspan="2">구분</th>
+                    <th>데이터</th>
+                </tr>
+                <tr>
+                    <td rowspan="4">사양정보</td>
+                    <td>업체코드</td>
+                    <td><input type="text" id="data1" value="PB31"></td>
+                </tr>
+                <tr>
+                    <td>부품번호</td>
+                    <td><input type="text" id="data2" value="89311X9500"></td>
+                </tr>
+                <tr>
+                    <td>서열코드</td>
+                    <td><input type="text" id="data3" value=""></td>
+                </tr>
+                <tr>
+                    <td>EO번호</td>
+                    <td><input type="text" id="data4" value=""></td>
+                </tr>
+                <tr>
+                    <td rowspan="4">추적정보</td>
+                    <td>생산일자</td>
+                    <td><input type="date" id="data5" value="<?php echo date('Y-m-d'); ?>"></td>
+                </tr>
+                <tr>
+                    <td>부품4M</td>
+                    <td><input type="text" id="data6" value="G1A1"></td>
+                </tr>
+                <tr>
+                    <td>A or @</td>
+                    <td><input type="text" id="data7" value="A"></td>
+                </tr>
+                <tr>
+                    <td>추적번호 (7~)</td>
+                    <td><input type="text" id="data8" value="0000001"></td>
+                </tr>
+                <tr>
+                    <td>기타</td>
+                    <td>업체영역</td>
+                    <td><input type="text" id="data9" value="21.920.6"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">지그번호</td>
+                    <td><input type="text" id="data10" value="ST1_1" placeholder="ST로 시작해야함(ST1_1 ~ ST4_2)"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">프린트위치</td>
+                    <td><input type="text" id="data11" value="1" placeholder="(1~4)"></td>
+                </tr>
+            </table>
             <button id="btn_print">PRINT</button>
         </div>
     </div>
-
     <script>
-        $(document).ready(function () {
-            // 오늘 날짜를 기본값으로 설정
-            const today = new Date().toISOString().split('T')[0];
-            $('#datePicker').val(today);
-
-            $('#btn_save').on('click', function () {
-                const positions = [];
-                $('.row2').each(function (index) {
-                    const x = $(this).find('.x_value').val();
-                    const y = $(this).find('.y_value').val();
-                    const w = $(this).find('.w_value').val();
-                    const h = $(this).find('.h_value').val();
-
-                    if (x && y && w && h) {
-                        positions.push(`${x},${y},${w},${h}`);
-                    } else {
-                        positions.push('0,0,0,0');
-                    }
-                });
-
-                console.log(positions);
-
-                $.ajax({
-                    url: '/save_barcode_positions',
-                    type: 'POST',
-                    data: {
-                        positions: positions
-                    },
-                    traditional: true,
-                    success: function (data) {
-                        alert(data.message);
-                    },
-                    error: function () {
-                        alert('데이터 저장 요청 실패.');
-                    }
-                });
-            });
-
-            $('#btn_print').on('click', function () {
-                const selectedOption = $('#partSelect option:selected');
-                const partNumber = selectedOption.val(); // 선택된 part[0] (ID)
-                const partName = selectedOption.data('part-name'); // 선택된 part[1] (이름)
-
-                const positions = [];
-                $('.row2').each(function () {
-                    const x = $(this).find('.x_value').val() || '0'; // X 값
-                    const y = $(this).find('.y_value').val() || '0'; // Y 값
-                    const w = $(this).find('.w_value').val() || '0'; // W 값
-                    const h = $(this).find('.h_value').val() || '0'; // H 값
-                    positions.push(`${x},${y},${w},${h}`);
-                });
-
-                // PRINT 요청 전송
-                const requestData = {
-                    date: $('#datePicker').val(), // 날짜 입력 필드의 값
-                    lotStart: $('#lotInput').val(), // LOT START 입력 필드의 값
-                    partNumber: partNumber,
-                    partName: partName,
-                    qty: $('#qtyInput').val(), // 수량 입력 필드의 값
-                    positions: positions
+        $(document).ready(function() {
+            $('#btn_print').click(function() {
+                const data = {
+                    data1: $('#data1').val(),
+                    data2: $('#data2').val(),
+                    data3: $('#data3').val(),
+                    data4: $('#data4').val(),
+                    data5: $('#data5').val(),
+                    data6: $('#data6').val(),
+                    data7: $('#data7').val(),
+                    data8: $('#data8').val(),
+                    data9: $('#data9').val(),
+                    data10: $('#data10').val(),
+                    data11: $('#data11').val()
                 };
 
-                console.log('Request Data:', requestData);  // 요청 데이터 출력
-
                 $.ajax({
-                    url: '/print',
-                    type: 'POST',
-                    data: requestData,
-                    success: function (data) {
-                        alert(data.message);
+                    url: 'http://127.0.0.1:5000/print',  // 서버의 프린트 요청 URL
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        // console.log(data);
+                        alert('프린트 요청 성공');
                     },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.error('Error Status:', textStatus);
-                        console.error('Error Thrown:', errorThrown);
-                        alert('프린터 출력 요청 실패.');
+                    error: function(error) {
+                        // console.log(data);
+                        alert('프린트 요청 실패');
                     }
                 });
             });
