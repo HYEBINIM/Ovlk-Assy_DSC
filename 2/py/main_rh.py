@@ -9,7 +9,6 @@ import time
 running = True
 
 # 데이터를 읽어올 plc DB
-
 main_db_config = {
     "host": "192.168.200.2",
     "port": 3306,
@@ -27,6 +26,31 @@ assy_db_config = {
     "database": "dataset",
     "charset": "utf8"
 }
+
+# 시작 시점에 running의 값을 정하는 메소드
+def init_running():
+    try:
+        assy_db = mysql.connector.connect(**assy_db_config)
+        assy_cursor = assy_db.cursor(dictionary = True)
+    except Error as e:
+        print(f"Error during initialize status")
+    except Exception as e:
+        print(f"Exception during initialize status")
+    
+    init_query = "SELECT data5 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    assy_cursor.execute(init_query)
+    init_record = assy_cursor.fetchone()
+    init_value = init_record['data5']
+
+    global running
+    if(init_value == '1' or init_value == '2'):
+        running = False
+    else:
+        running = True
+    
+    print(f"Running Status: {running}")
+    
+    return
 
 # kiosk DB 서버에서 plc 데이터 읽어오는 메소드
 def read_plc_data():
@@ -97,7 +121,7 @@ def read_plc_data():
             assy_db.commit()
 
             if not running:
-                complete_query = "UPDATE assy2read SET data9 = 1, contents1 = 20 WHERE id = 6"
+                complete_query = "UPDATE assy2read SET data7 = 1, contents1 = 18 WHERE id = 6"
 
                 print(complete_query)
 
@@ -136,6 +160,8 @@ def check_new_data():
     cursor.close()
     db.close()
     print("Assy DB Disconnected... (For checking new INSERT)")
+
+init_running()
 
 polling_interval = 1
 
