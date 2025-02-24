@@ -5,27 +5,59 @@ from mysql.connector import Error
 # 지역 시간 모듈
 import time
 
+# 사운드 관련 모듈
+import pygame
+
 # 업데이트 실행 상태를 지정할 전역변수
 running = True
 
 # 데이터를 읽어올 plc DB
+# main_db_config = {
+#     "host": "192.168.200.2",
+#     "port": 3306,
+#     "user": "server",
+#     "password": "dltmxm1234",
+#     "database": "dataset"
+# }
+
 main_db_config = {
-    "host": "192.168.200.2",
+    "host": "localhost",
     "port": 3306,
-    "user": "server",
-    "password": "dltmxm1234",
+    "user": "root",
+    "password": "autoset",
     "database": "dataset"
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
+# assy_db_config = {
+#     "host": "localhost",
+#     "port": 3306,
+#     "user": "server",
+#     "password": "dltmxm1234",
+#     "database": "dataset",
+#     "charset": "utf8"
+# }
+
 assy_db_config = {
     "host": "localhost",
     "port": 3306,
-    "user": "server",
-    "password": "dltmxm1234",
+    "user": "root",
+    "password": "autoset",
     "database": "dataset",
     "charset": "utf8"
 }
+
+# Pygame 초기화
+pygame.mixer.init()
+
+# 사운드 파일 정의
+ok_sound = "../sound/DINGDONG.wav"
+ng_sound = "../sound/NG.wav"
+
+# 사운드 재생 메소드
+def play_sound(sound_file):
+    pygame.mixer.music.load(sound_file)
+    pygame.mixer.music.play()
 
 # 시작 시점에 running의 값을 정하는 메소드
 def init_running():
@@ -80,7 +112,7 @@ def read_plc_data():
     record_lh = main_cursor.fetchone()
 
     # binding assy_lh record
-    sub_query = "SELECT id FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
+    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
     assy_cursor.execute(sub_query)
     sub_record = assy_cursor.fetchone()
 
@@ -103,17 +135,22 @@ def read_plc_data():
 
         # update data
         last_col = ""
+        last_val = ""
         set_clause = []
         for key, value in record_lh.items():
             if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
-                if col_name:
+                if col_name and sub_record[col_name] != value:
                     set_clause.append(f"{col_name} = {value}")
                     last_col = col_name
+                    last_val = value
                     if col_name == "data6" and (value == '1' or value == '2'):
                         # PC완료 업데이트 토글
                         global running
                         running = False
+
+                        last_col = col_name
+                        last_val = value
         
         if len(set_clause) > 0:
             if last_col == "data3":
@@ -137,6 +174,11 @@ def read_plc_data():
 
             assy_cursor.execute(update_query)
             assy_db.commit()
+
+            if last_val == '1':
+                play_sound(ok_sound)
+            elif last_val == '2':
+                play_sound(ng_sound)
 
             if not running:
                 complete_query = "UPDATE assy1read SET data9 = 1, contents1 = 20 WHERE id = 2"

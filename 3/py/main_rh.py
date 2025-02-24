@@ -5,6 +5,9 @@ from mysql.connector import Error
 # 지역 시간 모듈
 import time
 
+# 사운드 관련 모듈
+import pygame
+
 # 업데이트 실행 상태를 지정할 전역변수
 running = True
 
@@ -16,6 +19,18 @@ main_db_config = {
     "password": "dltmxm1234",
     "database": "dataset"
 }
+
+# Pygame 초기화
+pygame.mixer.init()
+
+# 사운드 파일 정의
+ok_sound = "../sound/DINGDONG.wav"
+ng_sound = "../sound/NG.wav"
+
+# 사운드 재생 메소드
+def play_sound(sound_file):
+    pygame.mixer.music.load(sound_file)
+    pygame.mixer.music.play()
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
 assy_db_config = {
@@ -80,7 +95,7 @@ def read_plc_data():
     record_rh = main_cursor.fetchone()
 
     # binding assy_rh record
-    sub_query = "SELECT id FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
     assy_cursor.execute(sub_query)
     sub_record = assy_cursor.fetchone()
 
@@ -102,16 +117,20 @@ def read_plc_data():
         }
 
         # update data
+        last_val = ""
         set_clause = []
         for key, value in record_rh.items():
             if "data" in key and key != "data0" and value is not None:
                 col_name = cols.get(key, None)
-                if col_name:
+                if col_name and sub_record[col_name] != value:
                     set_clause.append(f"{col_name} = {value}")
+                    last_val = value
                     if col_name == "data6" and (value == '1' or value == '2'):
                         # PC완료 업데이트 토글
                         global running
                         running = False
+
+                        last_val = value
         
         if len(set_clause) > 0:
             update_query = f"UPDATE assy_rh SET date = '{cur_date}', time = '{cur_time}', {', '.join(set_clause)} WHERE id = {max_id}"
@@ -120,6 +139,11 @@ def read_plc_data():
 
             assy_cursor.execute(update_query)
             assy_db.commit()
+
+            if last_val == '1':
+                play_sound(ok_sound)
+            elif last_val == '2':
+                play_sound(ng_sound)
 
             if not running:
                 complete_query = "UPDATE assy3read SET data0 = 1, contents1 = 11 WHERE id = 8"
