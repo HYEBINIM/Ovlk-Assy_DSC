@@ -125,29 +125,6 @@ iframe {
     height: 100%;
 
     background-color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo button{
-    width: auto;
-    height: 40px;
-
-    background-color: rbba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
-
-    cursor: pointer;
-}
-
-.logo button span{
-    font-size: 30px;
-    font-weight: 900;
-
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
 .content_sect{

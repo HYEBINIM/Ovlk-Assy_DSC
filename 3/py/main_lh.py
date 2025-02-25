@@ -88,14 +88,20 @@ def read_plc_data():
         print(f"Exception during DB connection: {e}")
         return
     
-    # read data (lh)
+    # read data (lh) - 1
     select_query_lh = "SELECT * FROM assy3read WHERE id = 1"
 
     main_cursor.execute(select_query_lh)
     record_lh = main_cursor.fetchone()
 
+    # read data (lh) - 2
+    select_query_lh_2 = "SELECT data2, data3, data4 FROM assy3read WHERE id = 3"
+
+    main_cursor.execute(select_query_lh_2)
+    record_lh_2 = main_cursor.fetchone()
+
     # binding assy_lh record
-    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
+    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6, data11, data12, data13 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
     assy_cursor.execute(sub_query)
     sub_record = assy_cursor.fetchone()
 
@@ -106,7 +112,7 @@ def read_plc_data():
         cur_date = time.strftime("%Y-%m-%d", cur)
         cur_time = time.strftime("%H:%M:%S", cur)
 
-        # column binding (dict)
+        # column binding (dict) -1
         cols = {
             "data2": "data1",
             "data3": "data2",
@@ -116,7 +122,7 @@ def read_plc_data():
             "data9": "data6"
         }
 
-        # update data
+        # update data - 1
         last_val = ""
         set_clause = []
         for key, value in record_lh.items():
@@ -132,6 +138,23 @@ def read_plc_data():
 
                         last_val = value
         
+        print(set_clause)
+
+        # column binding (dict) - 2
+        cols_2 = {
+            "data2": "data11",
+            "data3": "data12",
+            "data4": "data13"
+        }
+
+        #update data - 2
+        for key, value in record_lh_2.items():
+            if value is not None:
+                col_name = cols_2.get(key, None)
+                if col_name and sub_record[col_name] != value:
+                    set_clause.append(f"{col_name} = {value}")
+                    last_val = value
+
         if len(set_clause) > 0:
             update_query = f"UPDATE assy_lh SET date = '{cur_date}', time = '{cur_time}', {', '.join(set_clause)} WHERE id = {max_id}"
 
@@ -170,7 +193,7 @@ def check_new_data():
     if db.is_connected():
         print("Assy DB Connected... (For checking new INSERT)")
 
-    query = "SELECT data1, data2, data3, data4, data5, data6 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
+    query = "SELECT data1, data2, data3, data4, data5, data6, data11, data12, data13 FROM assy_lh ORDER BY date DESC, time DESC LIMIT 1"
     cursor.execute(query)
     record = cursor.fetchone()
 

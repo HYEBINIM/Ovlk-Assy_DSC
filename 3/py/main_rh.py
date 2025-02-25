@@ -20,6 +20,16 @@ main_db_config = {
     "database": "dataset"
 }
 
+# 모니터별로 관리할 assy 테이블이 있는 DB
+assy_db_config = {
+    "host": "localhost",
+    "port": 3306,
+    "user": "server",
+    "password": "dltmxm1234",
+    "database": "dataset",
+    "charset": "utf8"
+}
+
 # Pygame 초기화
 pygame.mixer.init()
 
@@ -31,16 +41,6 @@ ng_sound = "../sound/NG.wav"
 def play_sound(sound_file):
     pygame.mixer.music.load(sound_file)
     pygame.mixer.music.play()
-
-# 모니터별로 관리할 assy 테이블이 있는 DB
-assy_db_config = {
-    "host": "localhost",
-    "port": 3306,
-    "user": "server",
-    "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
-}
 
 # 시작 시점에 running의 값을 정하는 메소드
 def init_running():
@@ -88,14 +88,20 @@ def read_plc_data():
         print(f"Exception during DB connection: {e}")
         return
     
-    # read data (rh)
+    # read data (rh) - 1
     select_query_rh = "SELECT * FROM assy3read WHERE id = 5"
 
     main_cursor.execute(select_query_rh)
     record_rh = main_cursor.fetchone()
 
+    # read data (rh) - 2
+    select_query_rh_2 = "SELECT data2, data3, data4 FROM assy3read WHERE id = 7"
+
+    main_cursor.execute(select_query_rh_2)
+    record_rh_2 = main_cursor.fetchone()
+
     # binding assy_rh record
-    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    sub_query = "SELECT id, data1, data2, data3, data4, data5, data6, data11, data12, data13 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
     assy_cursor.execute(sub_query)
     sub_record = assy_cursor.fetchone()
 
@@ -106,7 +112,7 @@ def read_plc_data():
         cur_date = time.strftime("%Y-%m-%d", cur)
         cur_time = time.strftime("%H:%M:%S", cur)
 
-        # column binding (dict)
+        # column binding (dict) - 1
         cols = {
             "data2": "data1",
             "data3": "data2",
@@ -116,7 +122,7 @@ def read_plc_data():
             "data9": "data6"
         }
 
-        # update data
+        # update data - 1
         last_val = ""
         set_clause = []
         for key, value in record_rh.items():
@@ -131,6 +137,21 @@ def read_plc_data():
                         running = False
 
                         last_val = value
+
+        # column binding (dict) - 2
+        cols_2 = {
+            "data2": "data11",
+            "data3": "data12",
+            "data4": "data13"
+        }
+
+        # update data - 2
+        for key, value in record_rh_2.items():
+            if value is not None:
+                col_name = cols_2.get(key, None)
+                if col_name and sub_record[col_name] != value:
+                    set_clause.append(f"{col_name} = {value}")
+                    last_val = value
         
         if len(set_clause) > 0:
             update_query = f"UPDATE assy_rh SET date = '{cur_date}', time = '{cur_time}', {', '.join(set_clause)} WHERE id = {max_id}"
@@ -170,7 +191,7 @@ def check_new_data():
     if db.is_connected():
         print("Assy DB Connected... (For checking new INSERT)")
 
-    query = "SELECT data1, data2, data3, data4, data5, data6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    query = "SELECT data1, data2, data3, data4, data5, data6, data11, data12, data13 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
     cursor.execute(query)
     record = cursor.fetchone()
 

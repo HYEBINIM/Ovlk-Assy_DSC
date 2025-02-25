@@ -37,6 +37,40 @@ jig_db_config = {
     "charset": "utf8"
 }
 
+# 스캔 데이터에서 업체 코드 부분 기준으로 앞, 뒤로 나누어 주는 메소드
+# 조립 1차 DB에서 인덱스 및 지그값 추출을 위해 SELECT 할 때 WHERE절에 사용
+def devide_code(data):
+    split_data = data.split(chr(29))
+
+    prefix = split_data[0]
+    suffix = chr(29).join(split_data[2:])
+
+    fix = {
+        "prefix": prefix,
+        "suffix": suffix
+    }
+
+    return fix
+
+# 새로 들어온 스캔값이 직전 스캔값과 동일한지 비교하는 메소드
+# 동일할 경우 별도 INSERT 없이 스캔 검증과 로트 번호만 UPDATE
+def compare_data(pre_data, new_data):
+    pre_data_split = pre_data.split(chr(29))
+    new_data_split = new_data.split(chr(29))
+
+    # 업체 코드 제거
+    del pre_data_split[1]
+    del new_data_split[1]
+
+    # 재조합
+    pre_data = chr(29).join(pre_data_split)
+    new_data = chr(29).join(new_data_split)
+
+    if pre_data == new_data:
+        return True
+    else:
+        return False
+
 # 바코드의 prefix로 LH, RH 구분해주는 메소드
 # parameter: code([String] 바코드의 부품 코드 부분에서 prefix 추출하여 전달)
 def get_direction(code):
@@ -113,11 +147,16 @@ def scan():
                         print(f"Exception during DB Connection: {e}")
                         return
                     
-                    cur = time.localtime()
-                    cur_date = time.strftime("%Y-%m-%d", cur)
-                    cur_time = time.strftime("%H:%M:%S", cur)
+                    # 직전 스캔 데이터 읽어오기
+                    query_pre = f"SELECT data0 FROM {table} ORDER BY id DESC LIMIT 1"
+                    assy_cursor.execute(query_pre)
+                    pre_record = assy_cursor.fetchone()
 
-                    query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 = '{data}' ORDER BY date DESC, time DESC LIMIT 1"
+                    # 스캔 데이터에서 업체 코드 기준으로 prefix와 suffix 구분
+                    fix = devide_code(data)
+
+                    # 조립 1차 DB에서 업체 코드 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
+                    query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 LIKE '{fix['prefix']}%' AND data0 LIKE '%{fix['suffix']}' ORDER BY date DESC, time DESC LIMIT 1"
                     jig_cursor.execute(query_jig)
                     jig_record = jig_cursor.fetchone()
                     print(jig_record)
@@ -128,9 +167,15 @@ def scan():
                     main_cursor.execute(query_update)
                     main_db.commit()
 
-                    query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
-                    assy_cursor.execute(query_insert)
-                    assy_db.commit()
+                    # 새로운 스캔 데이터인 경우 INSERT
+                    if not compare_data(pre_record['data0'], data):
+                        cur = time.localtime()
+                        cur_date = time.strftime("%Y-%m-%d", cur)
+                        cur_time = time.strftime("%H:%M:%S", cur)
+
+                        query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
+                        assy_cursor.execute(query_insert)
+                        assy_db.commit()
                     
                     main_cursor.close()
                     main_db.close()
