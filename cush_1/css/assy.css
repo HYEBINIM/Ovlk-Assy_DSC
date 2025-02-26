@@ -116,32 +116,6 @@ img{
     column-gap: 10px;
 }
 
-.part_code, .part_code_full{
-    width: 100%;
-    height: 30px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin-bottom: 5px;
-
-    border: 1px solid black;
-    background-color: #F7FF9C;
-}
-
-.part_code span{
-    color: black;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.part_code_full span{
-    color: black;
-    font-size: 14px;
-    font-weight: 300;
-}
-
 .conclusion{
     width: 100%;
     height: 80px;

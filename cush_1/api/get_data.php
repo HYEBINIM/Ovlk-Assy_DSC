@@ -7,39 +7,34 @@
     $conn = mysqli_connect($host, $user, $pw, $db);
     if($conn -> connect_error) die($conn -> connect_error);
 
-    $query_dir = "SELECT data0 FROM read1 WHERE id = 1";
-    $result_dir = mysqli_query($conn, $query_dir);
-    if(!$result_dir) die($conn -> error);
-
-    $record_dir = mysqli_fetch_array($result_dir);
-    $dir = $record_dir['data0'];
-
-    $query = "SELECT * FROM read1 WHERE id = 5";
+    $query = "SELECT * FROM result1 ORDER BY date DESC, time DESC LIMIT 1";
     $result = mysqli_query($conn, $query);
     if(!$result) die($conn -> error);
 
     $record = mysqli_fetch_array($result);
 
     $data = array();
-    if($dir == '1'){
-        // LH
-        array_push($data, 1);
-        array_push($data, $record['data0']);
-        array_push($data, $record['data1']);
-        array_push($data, $record['data2']);
-        array_push($data, $record['data3']);
-        array_push($data, $record['data4']);
-    }elseif($dir == '2'){
-        // RH
-        array_push($data, 2);
-        array_push($data, $record['data5']);
-        array_push($data, $record['data6']);
-        array_push($data, $record['data7']);
-        array_push($data, $record['data8']);
-        array_push($data, $record['data9']);
+    if($record['data9'] == "1"){
+        array_push($data, 1);   // LH or RH 구분자
+    }elseif($record['data9'] == "2"){
+        array_push($data, 2);   // LH or RH 구분자
+    }else{
+        array_push($data, 0);   // 잘못된 데이터 구분자
+        
+        $result -> close();
+        $conn -> close();
+
+        echo json_encode($data);
+
+        return;
     }
 
-    $result_dir -> close();
+    array_push($data, $record['data2']);    // 부쉬 합불
+    array_push($data, $record['data3']);    // 스펀지 합불
+    array_push($data, $record['data4']);    // 스프링 합불
+    array_push($data, $record['data5']);    // 조립 합불
+    array_push($data, $record['data7']);    // 전체 합불
+
     $result -> close();
     $conn -> close();
 
