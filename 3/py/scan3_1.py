@@ -42,8 +42,8 @@ jig_db_config = {
 def devide_code(data):
     split_data = data.split(chr(29))
 
-    prefix = split_data[0]
-    suffix = chr(29).join(split_data[2:])
+    prefix = chr(29).join(split_data[0:6])
+    suffix = chr(29).join(split_data[8:])
 
     fix = {
         "prefix": prefix,
@@ -59,8 +59,8 @@ def compare_data(pre_data, new_data):
     new_data_split = new_data.split(chr(29))
 
     # 업체 코드 제거
-    del pre_data_split[1]
-    del new_data_split[1]
+    del pre_data_split[7]
+    del new_data_split[7]
 
     # 재조합
     pre_data = chr(29).join(pre_data_split)
@@ -101,93 +101,102 @@ def scan():
                     data = ser.readline().decode("utf-8").strip()
                     print(f"Recieved Data: {data.encode()}")
 
-                    split_data = data.split(chr(29))
-                    try:
-                        # 제품 코드 앞에 붙은 'P' 제거
-                        part_code = split_data[2][1:]
-                        dir = get_direction(part_code)
-                    except Exception as e:
-                        # 잘못된 QR코드를 스캔한 경우 다시 스캔하도록 지시
-                        print(f"Invalid data: Re-scan")
-                        continue
-                    
-                    if dir == "LH":
-                        table = "assy_lh"
-                        row_write_id = 2
-                    elif dir == "RH":
-                        table = "assy_rh"
-                        row_write_id = 6
-                    else:
-                        # LH, RH 구분이 되지 않는 경우 다시 스캔하도록 지시
-                        print("Invalid data: Re-scan")
-                        continue
-                    
-                    try:
-                        main_db = mysql.connector.connect(**main_db_config)
-                        main_cursor = main_db.cursor(dictionary = True)
+                    # 여러 데이터가 한번에 들어온 경우 반복문 돌리도록 지시 (EOT 기준으로 구분)
+                    inputs = data.split(chr(4))
 
-                        if main_db.is_connected():
-                            print("Main DB Connected...")
+                    for elem in inputs:
+                        if elem == '':
+                            continue
+
+                        data = elem + chr(4)
+
+                        split_data = data.split(chr(29))
+                        try:
+                            # 제품 코드 앞에 붙은 'P' 제거
+                            part_code = split_data[2][1:]
+                            dir = get_direction(part_code)
+                        except Exception as e:
+                            # 잘못된 QR코드를 스캔한 경우 다시 스캔하도록 지시
+                            print(f"Invalid data: Re-scan")
+                            continue
                         
-                        assy_db = mysql.connector.connect(**assy_db_config)
-                        assy_cursor = assy_db.cursor(dictionary = True)
-
-                        if assy_db.is_connected():
-                            print("Assy DB Connected...")
+                        if dir == "LH":
+                            table = "assy_lh"
+                            row_write_id = 2
+                        elif dir == "RH":
+                            table = "assy_rh"
+                            row_write_id = 6
+                        else:
+                            # LH, RH 구분이 되지 않는 경우 다시 스캔하도록 지시
+                            print("Invalid data: Re-scan")
+                            continue
                         
-                        jig_db = mysql.connector.connect(**jig_db_config)
-                        jig_cursor = jig_db.cursor(dictionary = True)
+                        try:
+                            main_db = mysql.connector.connect(**main_db_config)
+                            main_cursor = main_db.cursor(dictionary = True)
 
-                        if jig_db.is_connected():
-                            print("Jig(Assy1) DB Connected...")
-                    except Error as e:
-                        print(f"Error during DB Connection: {e}")
-                        return
-                    except Exception as e:
-                        print(f"Exception during DB Connection: {e}")
-                        return
-                    
-                    # 직전 스캔 데이터 읽어오기
-                    query_pre = f"SELECT data0 FROM {table} ORDER BY id DESC LIMIT 1"
-                    assy_cursor.execute(query_pre)
-                    pre_record = assy_cursor.fetchone()
+                            if main_db.is_connected():
+                                print("Main DB Connected...")
+                            
+                            assy_db = mysql.connector.connect(**assy_db_config)
+                            assy_cursor = assy_db.cursor(dictionary = True)
 
-                    # 스캔 데이터에서 업체 코드 기준으로 prefix와 suffix 구분
-                    fix = devide_code(data)
+                            if assy_db.is_connected():
+                                print("Assy DB Connected...")
+                            
+                            jig_db = mysql.connector.connect(**jig_db_config)
+                            jig_cursor = jig_db.cursor(dictionary = True)
 
-                    # 조립 1차 DB에서 업체 코드 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
-                    query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 LIKE '{fix['prefix']}%' AND data0 LIKE '%{fix['suffix']}' ORDER BY date DESC, time DESC LIMIT 1"
-                    jig_cursor.execute(query_jig)
-                    jig_record = jig_cursor.fetchone()
-                    print(jig_record)
-                    jig = jig_record['data9']
-                    index = jig_record['data10']
+                            if jig_db.is_connected():
+                                print("Jig(Assy1) DB Connected...")
+                        except Error as e:
+                            print(f"Error during DB Connection: {e}")
+                            return
+                        except Exception as e:
+                            print(f"Exception during DB Connection: {e}")
+                            return
+                        
+                        # 직전 스캔 데이터 읽어오기
+                        query_pre = f"SELECT data0 FROM {table} ORDER BY id DESC LIMIT 1"
+                        assy_cursor.execute(query_pre)
+                        pre_record = assy_cursor.fetchone()
 
-                    query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-                    main_cursor.execute(query_update)
-                    main_db.commit()
+                        # 스캔 데이터에서 업체 코드 기준으로 prefix와 suffix 구분
+                        fix = devide_code(data)
 
-                    # 새로운 스캔 데이터인 경우 INSERT
-                    if not compare_data(pre_record['data0'], data):
-                        cur = time.localtime()
-                        cur_date = time.strftime("%Y-%m-%d", cur)
-                        cur_time = time.strftime("%H:%M:%S", cur)
+                        # 조립 1차 DB에서 업체 코드 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
+                        query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 LIKE '{fix['prefix']}%' AND data0 LIKE '%{fix['suffix']}' ORDER BY date DESC, time DESC LIMIT 1"
+                        jig_cursor.execute(query_jig)
+                        jig_record = jig_cursor.fetchone()
+                        print(jig_record)
+                        jig = jig_record['data9']
+                        index = jig_record['data10']
 
-                        query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
-                        assy_cursor.execute(query_insert)
-                        assy_db.commit()
-                    
-                    main_cursor.close()
-                    main_db.close()
-                    print("Main DB Disconnected...")
+                        query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                        main_cursor.execute(query_update)
+                        main_db.commit()
 
-                    assy_cursor.close()
-                    assy_db.close()
-                    print("Assy DB Disconnected...")
+                        # 새로운 스캔 데이터인 경우 INSERT
+                        if not compare_data(pre_record['data0'], data):
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
 
-                    jig_cursor.close()
-                    jig_db.close()
-                    print("Jig(Assy1) DB Disconnected...")
+                            query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
+                            assy_cursor.execute(query_insert)
+                            assy_db.commit()
+                        
+                        main_cursor.close()
+                        main_db.close()
+                        print("Main DB Disconnected...")
+
+                        assy_cursor.close()
+                        assy_db.close()
+                        print("Assy DB Disconnected...")
+
+                        jig_cursor.close()
+                        jig_db.close()
+                        print("Jig(Assy1) DB Disconnected...")
             except Exception as e:
                 print(f"Error at point 1: {e}")
     except Exception as e:

@@ -448,9 +448,11 @@
 
                         if (dataLH[i] == 1) {
                             if (i == 3) {
-                                $("#" + idLH).text(dataLH[7]);
+                                let bolt = parseFloat(dataLH[7]) / 100;
+                                $("#" + idLH).text(bolt);
                             } else if (i == 4) {
-                                $("#" + idLH).text(dataLH[8]);
+                                let bolt = parseFloat(dataLH[8]) / 100;
+                                $("#" + idLH).text(bolt);
                             } else {
                                 $("#" + idLH).text("OK");
                             }
@@ -458,9 +460,11 @@
                             $("#" + idLH).parent().css("background-color", "green");
                         } else if (dataLH[i] == 2) {
                             if (i == 3) {
-                                $("#" + idLH).text(dataLH[7]);
+                                let bolt = parseFloat(dataLH[7]) / 100;
+                                $("#" + idLH).text(bolt);
                             } else if (i == 4) {
-                                $("#" + idLH).text(dataLH[8]);
+                                let bolt = parseFloat(dataLH[8]) / 100;
+                                $("#" + idLH).text(bolt);
                             } else {
                                 $("#" + idLH).text("NG");
                             }
@@ -476,9 +480,11 @@
 
                         if (dataRH[i] == 1) {
                             if (i == 3) {
-                                $("#" + idRH).text(dataRH[7]);
+                                let bolt = parseFloat(dataRH[7]) / 100;
+                                $("#" + idRH).text(bolt);
                             } else if (i == 4) {
-                                $("#" + idRH).text(dataRH[8]);
+                                let bolt = parseFloat(dataRH[8]) / 100;
+                                $("#" + idRH).text(bolt);
                             } else {
                                 $("#" + idRH).text("OK");
                             }
@@ -486,9 +492,11 @@
                             $("#" + idRH).parent().css("background-color", "green");
                         } else if (dataRH[i] == 2) {
                             if (i == 3) {
-                                $("#" + idRH).text(dataRH[7]);
+                                let bolt = parseFloat(dataRH[7]) / 100;
+                                $("#" + idRH).text(bolt);
                             } else if (i == 4) {
-                                $("#" + idRH).text(dataRH[8]);
+                                let bolt = parseFloat(dataRH[8]) / 100;
+                                $("#" + idRH).text(bolt);
                             } else {
                                 $("#" + idRH).text("NG");
                             }

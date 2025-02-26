@@ -67,6 +67,9 @@
             array_push($data_lh, $record_lh['DATA3']);
             array_push($data_lh, $record_lh['DATA4']);
             array_push($data_lh, $record_lh['DATA5']);
+            array_push($data_lh, $record_lh['DATA11']);
+            array_push($data_lh, $record_lh['DATA12']);
+            array_push($data_lh, $record_lh['DATA13']);
             array_push($data_lh, $record_lh['DATA6']);
 
             array_push($data_rh, $record_rh['DATA1']);
@@ -74,6 +77,9 @@
             array_push($data_rh, $record_rh['DATA3']);
             array_push($data_rh, $record_rh['DATA4']);
             array_push($data_rh, $record_rh['DATA5']);
+            array_push($data_rh, $record_rh['DATA11']);
+            array_push($data_rh, $record_rh['DATA12']);
+            array_push($data_rh, $record_rh['DATA13']);
             array_push($data_rh, $record_rh['DATA6']);
     }
 
