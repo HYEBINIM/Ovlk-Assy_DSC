@@ -18,7 +18,7 @@ main_db_config = {
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
-assy_db_config = {
+assy_db_config = {+3
     "host": "localhost",
     "port": 3306,
     "user": "server",
@@ -130,7 +130,7 @@ def scan():
                             return
                         
                         # 직전 스캔 데이터 읽어오기
-                        query_pre = f"SELECT data0 FROM {table} ORDER BY id DESC LIMIT 1"
+                        query_pre = f"SELECT id, data0 FROM {table} ORDER BY id DESC LIMIT 1"
                         assy_cursor.execute(query_pre)
                         pre_record = assy_cursor.fetchone()
 
@@ -150,14 +150,19 @@ def scan():
                         main_cursor.execute(query_update_2)
                         main_db.commit()
 
+                        cur = time.localtime()
+                        cur_date = time.strftime("%Y-%m-%d", cur)
+                        cur_time = time.strftime("%H:%M:%S", cur)
+
                         # 새로운 스캔 데이터인 경우 INESRT
                         if not compare_data(pre_record['data0'], data):
-                            cur = time.localtime()
-                            cur_date = time.strftime("%Y-%m-%d", cur)
-                            cur_time = time.strftime("%H:%M:%S", cur)
-
                             query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                             assy_cursor.execute(query_insert)
+                            assy_db.commit()
+                        else:
+                            # 기존 데이터와 중복인 경우 시간만 업데이트
+                            query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']})"
+                            assy_cursor.execute(query_duplication)
                             assy_db.commit()
                         
                         main_cursor.close()
