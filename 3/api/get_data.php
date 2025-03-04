@@ -72,6 +72,10 @@
             array_push($data_lh, $record_lh['DATA13']);
             array_push($data_lh, $record_lh['DATA6']);
 
+            $rank_lh = array();
+            array_push($rank_lh, $record_lh['DATA8']);
+            array_push($rank_lh, $record_lh['DATA9']);
+
             array_push($data_rh, $record_rh['DATA1']);
             array_push($data_rh, $record_rh['DATA2']);
             array_push($data_rh, $record_rh['DATA3']);
@@ -81,11 +85,20 @@
             array_push($data_rh, $record_rh['DATA12']);
             array_push($data_rh, $record_rh['DATA13']);
             array_push($data_rh, $record_rh['DATA6']);
+
+            $rank_rh = array();
+            array_push($rank_rh, $record_rh['DATA8']);
+            array_push($rank_rh, $record_rh['DATA9']);
     }
 
     $data = array();
     array_push($data, $data_lh);
     array_push($data, $data_rh);
+
+    if($process == 3){
+        array_push($data, $rank_lh);
+        array_push($data, $rank_rh);
+    }
 
     $result_lh -> close();
     $result_rh -> close();

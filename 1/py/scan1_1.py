@@ -18,7 +18,7 @@ main_db_config = {
 }
 
 # 모니터별로 관리할 assy 테이블이 있는 DB
-assy_db_config = {+3
+assy_db_config = {
     "host": "localhost",
     "port": 3306,
     "user": "server",

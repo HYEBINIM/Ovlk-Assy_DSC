@@ -26,8 +26,7 @@ assy_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # Pygame 초기화

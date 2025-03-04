@@ -23,8 +23,7 @@ assy_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # 인덱스와 지그 번호를 가져올 조립 1차 PC의 DB
