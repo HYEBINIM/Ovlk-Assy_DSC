@@ -9,6 +9,7 @@ from mysql.connector import Error
 import time
 
 # 지그 번호를 읽어오고 스캔 검증, 스캔 로트 코드 등을 업데이트할 plc DB
+# 용접 관련 데이터를 읽어올 peak 테이블 위치
 main_db_config = {
     "host": "192.168.200.2",
     "port": 3306,
@@ -100,11 +101,13 @@ def scan():
                             index_col = "data0"
                             jig_col = "data1"
                             row_write_id = 2
+                            peak_table = "peak_lh"
                         elif dir == "RH":
                             table = "assy_rh"
                             index_col = "data2"
                             jig_col = "data3"
                             row_write_id = 6
+                            peak_table = "peak_rh"
                         else:
                             # LH, RH 구분이 되지 않는 경우 다시 스캔하도록 지시
                             print("Invalid data: Re-scan")
@@ -155,8 +158,35 @@ def scan():
                         cur_time = time.strftime("%H:%M:%S", cur)
 
                         # 새로운 스캔 데이터인 경우 INESRT
+                        # 용접 데이터도 함께 INSERT
                         if not compare_data(pre_record['data0'], data):
-                            query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
+                            query_peak1 = f"SELECT peak1, peak2, peak3 FROM {peak_table}1 ORDER BY id DESC LIMIT 1"     # 1차 용접 전압, 전류, 유량
+                            query_peak2 = f"SELECT peak1, peak2, peak3 FROM {peak_table}2 ORDER BY id DESC LIMIT 1"     # 2차 용접 전압, 전류, 유량
+                            query_peak3 = f"SELECT peak1, peak2, peak3 FROM {peak_table}3 ORDER BY id DESC LIMIT 1"     # 3차 용접 전압, 전류, 유량
+
+                            main_cursor.execute(query_peak1)
+                            record_peak1 = main_cursor.fetchone()
+                            
+                            main_cursor.execute(query_peak2)
+                            record_peak2 = main_cursor.fetchone()
+
+                            main_cursor.execute(query_peak3)
+                            record_peak3 = main_cursor.fetchone()
+
+                            if record_peak1 is None or record_peak2 is None or record_peak3 is None:
+                                query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
+                                print("용접 데이터가 없습니다.")
+                            else:
+                                query_insert = f"""INSERT INTO {table}
+                                (date, time, data0, data9, data10,
+                                data11, data12, data13,
+                                data14, data15, data16,
+                                data17, data18, data19)
+                                VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}',
+                                '{record_peak1['peak1']}', '{record_peak1['peak2']}', '{record_peak1['peak3']}',
+                                '{record_peak2['peak1']}', '{record_peak2['peak2']}', '{record_peak2['peak3']}',
+                                '{record_peak3['peak1']}', '{record_peak3['peak2']}', '{record_peak3['peak3']}')"""
+                            
                             assy_cursor.execute(query_insert)
                             assy_db.commit()
                         else:
