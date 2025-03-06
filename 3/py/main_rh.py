@@ -146,14 +146,44 @@ def read_plc_data():
         }
 
         # update data - 2
+        last_col = ""
         for key, value in record_rh_2.items():
             if value is not None:
                 col_name = cols_2.get(key, None)
                 if col_name and sub_record[col_name] != value:
                     set_clause.append(f"{col_name} = {value}")
+                    last_col = col_name
                     last_val = value
         
         if len(set_clause) > 0:
+            if last_col == "data11":
+                # 후방 합불 타이밍
+                vector_query = "SELECT data2 FROM input2 WHERE id = 1"
+                main_cursor.execute(vector_query)
+                vector_record = main_cursor.fetchone()
+
+                vector = vector_record['data2']
+
+                set_clause.append(f"data14 = {vector}")
+            elif last_col == "data12":
+                # 전방 합불 타이밍
+                vector_query = "SELECT data6 FROM input2 WHERE id = 1"
+                main_cursor.execute(vector_query)
+                vector_record = main_cursor.fetchone()
+
+                vector = vector_record['data6']
+
+                set_clause.append(f"data15 = {vector}")
+            elif last_col == "data13":
+                # 원점 합불 타이밍
+                vector_query = "SELECT data2 FROM input2 WHERE id = 1"
+                main_cursor.execute(vector_query)
+                vector_record = main_cursor.fetchone()
+
+                vector = vector_record['data2']
+
+                set_clause.append(f"data16 = {vector}")
+                
             update_query = f"UPDATE assy_rh SET date = '{cur_date}', time = '{cur_time}', {', '.join(set_clause)} WHERE id = {max_id}"
 
             print(update_query)

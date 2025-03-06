@@ -36,7 +36,7 @@ jig_db_config = {
     "charset": "utf8"
 }
 
-# 스캔 데이터에서 업체 코드 부분 기준으로 앞, 뒤로 나누어 주는 메소드
+# 스캔 데이터에서 업체 영역 부분 기준으로 앞, 뒤로 나누어 주는 메소드
 # 조립 1차 DB에서 인덱스 및 지그값 추출을 위해 SELECT 할 때 WHERE절에 사용
 def devide_code(data):
     split_data = data.split(chr(29))

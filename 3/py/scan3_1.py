@@ -37,7 +37,7 @@ jig_db_config = {
     "charset": "utf8"
 }
 
-# 스캔 데이터에서 업체 코드 부분 기준으로 앞, 뒤로 나누어 주는 메소드
+# 스캔 데이터에서 업체 영역 부분 기준으로 앞, 뒤로 나누어 주는 메소드
 # 조립 1차 DB에서 인덱스 및 지그값 추출을 위해 SELECT 할 때 WHERE절에 사용
 def devide_code(data):
     split_data = data.split(chr(29))
@@ -70,6 +70,14 @@ def compare_data(pre_data, new_data):
         return True
     else:
         return False
+
+# 스캔값에서 업체 영역(토크)만 추출하는 메소드
+def get_torque(data):
+    data_split = data.split(chr{29})
+
+    torque = data[7]
+
+    return torque
 
 # 바코드의 prefix로 LH, RH 구분해주는 메소드
 # parameter: code([String] 바코드의 부품 코드 부분에서 prefix 추출하여 전달)
@@ -172,9 +180,12 @@ def scan():
                         jig = jig_record['data9']
                         index = jig_record['data10']
 
-                        query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-                        main_cursor.execute(query_update)
-                        main_db.commit()
+                        # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
+                        torque = get_torque(data)
+                        if torque != "00.000.0":
+                            query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                            main_cursor.execute(query_update)
+                            main_db.commit()
 
                         cur = time.localtime()
                         cur_date = time.strftime("%Y-%m-%d", cur)
