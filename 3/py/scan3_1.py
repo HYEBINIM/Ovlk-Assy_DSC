@@ -73,7 +73,7 @@ def compare_data(pre_data, new_data):
 
 # 스캔값에서 업체 영역(토크)만 추출하는 메소드
 def get_torque(data):
-    data_split = data.split(chr{29})
+    data_split = data.split(chr(29))
 
     torque = data[7]
 

@@ -14,6 +14,7 @@ pyinstaller --onefile --hidden-import=mysql.connector.plugins.mysql_native_passw
 <main> DB 업데이트 코드
 파일 이름은 main_[lh/rh].py
 전역 변수 running: 업데이트를 계속할 것인지, 새로운 스캔값을 기다릴 것인지 결정
+
 ** 업데이트 **
 1. plc 테이블에서 해당하는 값 읽어옴
 ex) 조립 1차 라인에서 LH 관련 데이터를 읽어온다면, assy1read 테이블의 id = 1번에서 DATA3 - DATA8의 정보를 가져와 assy_lh 테이블의 DATA1 - DATA6에 업데이트

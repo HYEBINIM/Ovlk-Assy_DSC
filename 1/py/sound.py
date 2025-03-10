@@ -10,7 +10,7 @@ import time
 
 # DB 정보
 db_config = {
-    "host": "localhost",
+    "host": "192.168.200.2",
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
