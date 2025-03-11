@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang = "ko">
+    <head>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <link rel = "stylesheet" href = "/css/index.css">
+        <script src = "/js/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div class = "wrapper">
+            <div class = "title">
+                <div class = "title_label">
+                    <span>부스 호출 알림</span>
+                </div>
+            </div>
+
+            <div class = "map">
+                <div class = "map_board">
+                    <img src = "/img/layout.jpg">
+                    <div class = "sector">
+                        <span>SP2 MECH SUB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "nav">
+
+            </div>
+
+            <div class = "notice">
+                <div class = "alarm_box">
+                    <span class = "alarm_text"></span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                setLocation();
+
+                $(".sector").click(function() {
+                    window.location.href = "sector.html";
+                });
+            });
+
+            function setLocation(){
+                const imgWidth = $(".map img").width();
+                const imgHeight = $(".map img").height();
+
+                const top = (imgHeight / 9) * 4;
+                const left = imgWidth / 6;
+
+                const width = left * 4;
+                const height = (imgHeight / 9) * 2;
+
+                $(".sector").width(width);
+                $(".sector").height(height);
+                $(".sector").css("top", top);
+                $(".sector").css("left", left);
+            }
+
+            function turnOnSector(){
+                const sector = $(".sector");
+                const alarmBox = $(".alarm_box");
+                const alarmText = $(".alarm_text");
+
+                if(!sector.hasClass("on")){
+                    sector.addClass("on");
+
+                    alarmText.text("SP2 MECH SUB에서 호출");
+                    alarmBox.addClass("show");
+                }
+            }
+
+            function turnOffSector(){
+                const sector = $(".sector");
+                const alarmBox = $(".alarm_box");
+
+                if(sector.hasClass("on")){
+                    sector.removeClass("on");
+                }
+
+                if(alarmBox.hasClass("show")){
+                    alarmBox.removeClass("show");
+                }
+            }
+
+            function getData(){
+                $.ajax({
+                    url: "/api/get_data.php",
+                    type: "GET",
+                    success: function(result){
+                        var data = JSON.parse(result);
+
+                        check = false;
+
+                        data.forEach(function(value){
+                            if(value == "1"){
+                                check = true;
+                            }
+                        });
+
+                        if(check){
+                            turnOnSector();
+                        }else{
+                            turnOffSector();
+                        }
+                    }
+                });
+            }
+
+            setInterval(getData, 1000);
+        </script>
+    </body>
+</html>
