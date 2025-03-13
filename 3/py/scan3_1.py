@@ -165,7 +165,7 @@ def scan():
                             return
                         
                         # 직전 스캔 데이터 읽어오기
-                        query_pre = f"SELECT id, data0 FROM {table} ORDER BY id DESC LIMIT 1"
+                        query_pre = f"SELECT id, data0, data9 FROM {table} ORDER BY id DESC LIMIT 1"
                         assy_cursor.execute(query_pre)
                         pre_record = assy_cursor.fetchone()
 
@@ -183,7 +183,12 @@ def scan():
                         # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
                         torque = get_torque(data)
                         if torque != "00.000.0":
-                            query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                            # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
+                            if pre_record['data9'] == "C" or pre_record['data9'] == "D":
+                                query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
+                            else:
+                                query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                            
                             main_cursor.execute(query_update)
                             main_db.commit()
 
