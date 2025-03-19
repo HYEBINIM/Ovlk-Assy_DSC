@@ -156,9 +156,11 @@ def read_plc_data():
             print(update_query)
 
             if last_val == "1":
-                play_sound(ok_sound)
+                if last_col != "data3" and last_col != "data4":
+                    play_sound(ok_sound)
             elif last_val == "2":
-                play_sound(ng_sound)
+                if last_col != "data3" and last_col != "data4":
+                    play_sound(ng_sound)
 
             assy_cursor.execute(update_query)
             assy_db.commit()
