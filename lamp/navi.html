@@ -18,7 +18,7 @@
 
             .nav{
                 width: 100%;
-                height: 8vh;
+                height: 100vh;
 
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
@@ -27,33 +27,48 @@
                 background-color: #F7F7F7;
             }
 
-            .home, .noti, .back{
-                width: 36px;
-                height: 36px;
+            .nav div{
+                width: 100%;
+                height: 100%;
 
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
-
-            .active{
-                border-bottom: 2px solid #1E90FF;
-            }
         </style>
     </head>
     <body>
         <div class = "nav">
-            <div class = "home active">
-                <img src = "/icon/home_active.svg" id = "home_button" width = "25" height = "25">
+            <div class = "list_area" id = "list" onclick = "movePage(this.id)">
+                <img src = "/icon/list.svg" width = "30" height = "30">
             </div>
 
-            <div class = "noti">
-                <img src = "/icon/bell.svg" id = "bell_button" width = "25" height = "25">
+            <div class = "home_area" id = "home" onclick = "movePage(this.id)">
+                <img src = "/icon/home.svg" width = "30" height = "30">
             </div>
 
-            <div class = "back">
-                <img src = "/icon/back.svg" id = "back_button" width = "25" height = "25">
+            <div class = "back_area" id = "back" onclick = "movePage(this.id)">
+                <img src = "/icon/back.svg" width = "30" height = "30">
             </div>
         </div>
+        
+        <script>
+            var previousUrl = parent.previousUrl;
+
+            function movePage(id){
+                if(id == "list"){
+                    parent.$("#list")[0].contentWindow.slide("in");
+                }else if(id == "home"){
+                    previousUrl.push(parent.$("#page").attr("src"));
+
+                    parent.$("#page").attr("src", "/map.html");
+
+                }else if(id == "back"){
+                    url = previousUrl.pop();
+
+                    parent.$("#page").attr("src", url);
+                }
+            }
+        </script>
     </body>
 </html>

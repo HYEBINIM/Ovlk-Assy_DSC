@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang = "ko">
+    <head>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+        <link rel = "stylesheet" href = "/css/list.css">
+        <script src = "/js/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div class = "wrapper">
+            <div class = "board">
+                <!-- 호출 부스 출력 -->
+            </div>
+
+            <div class = "close_container" onclick = "slide('out')">
+                <img src = "/icon/close.svg" class = "close" width = "50" height = "50">
+            </div>
+        </div>
+
+        <script>
+            function setPage(){
+                $.ajax({
+                    url: "/api/get_data.php",
+                    type: "GET",
+                    success: function(result){
+                        var data = JSON.parse(result);
+
+                        const board = $(".board");
+
+                        for(idx = 0; idx < data.length; idx++){
+                            if(data[idx] == "1"){
+                                var areaText = idx < 5 ? "SP2 MECH SUB 1" : "SP2 MECH SUB 2";
+                                var boothNo = idx + 1;
+
+                                var newElement = $(`
+                                <div class = "element" id = "${boothNo}" onclick = "movePage(this.id)">
+                                    <span class = "area">${areaText}</span>
+                                    <span class = "booth">${boothNo}번 부스에서 호출</span>
+                                </div>
+                                `)
+
+                                board.append(newElement);
+                            }
+                        }
+                    }
+                });
+            }
+
+            function slide(action){
+                if(action == "in"){
+                    parent.$("#list").css("display", "block");
+                    $(".wrapper").addClass("in");
+                    setPage();
+                }else if(action == "out"){
+                    $(".wrapper").removeClass("in");
+                    $(".wrapper").one("animationend", function(){
+                        parent.$("#list").css("display", "none");
+                    });
+                    $(".board").empty();
+                }
+            }
+
+            function movePage(boothNo){
+                var id = parseInt(boothNo);
+
+                if(id <= 5){
+                    parent.$("#page").attr("src", "/sector.html?sector=1");
+                    slide("out");
+                }else if(id <= 8){
+                    parent.$("#page").attr("src", "/sector.html?sector=2");
+                    slide("out");
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,8 +1,14 @@
 <?php
     // kiosk DB config
-    $host = "192.168.200.2:3306";
-    $user = "server";
-    $pw = "dltmxm1234";
+    // $host = "192.168.200.2:3306";
+    // $user = "server";
+    // $pw = "dltmxm1234";
+    // $db = "dataset";
+
+    // test DB config
+    $host = "localhost";
+    $user = "root";
+    $pw = "autoset";
     $db = "dataset";
 
     // connection

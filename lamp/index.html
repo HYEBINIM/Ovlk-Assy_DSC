@@ -3,111 +3,140 @@
     <head>
         <meta charset = "UTF-8">
         <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
-        <link rel = "stylesheet" href = "/css/index.css">
         <script src = "/js/jquery-3.6.0.min.js"></script>
+        <style>
+            @font-face {
+                font-family: "G-medium";
+                src: url("/font/GmarketSansTTFMedium.ttf") format("truetype");
+            }
+            
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html, body{
+                width: 100%;
+                height: 100%;
+
+                position: relative;
+
+                overflow: hidden;
+            }
+
+            #page{
+                width: 100%;
+                height: 92vh;
+
+                border: none;
+
+                position: absolute;
+                top: 0;
+            }
+
+            #navi{
+                width: 100%;
+                height: 8vh;
+
+                border: none;
+
+                position: absolute;
+                bottom: 0;
+            }
+
+            #list{
+                z-index: 1000;
+
+                width: 100%;
+                height: calc(92vh * 10 / 11);
+
+                border: none;
+
+                position: absolute;
+                bottom: 8vh;
+
+                display: none;
+            }
+
+            .alarm_area{
+                z-index: 1000;
+
+                width: 100%;
+                height: auto;
+
+                display: flex;
+                justify-content: center;
+            }
+
+            .alarm_box{
+                width: 70vw;
+                height: 5vh;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background-color: rgba(50, 205, 50, 0.8);
+
+                border-radius: 8px;
+
+                position: absolute;
+
+                bottom: -80px;
+            }
+
+            .alarm_box.show{
+                animation: slide-up 1.5s forwards;
+            }
+
+            .alarm_text{
+                color: white;
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            @keyframes slide-up{
+                0%{
+                    bottom: -80px;
+                    opacity: 0;
+                }
+                50%{
+                    bottom: 80px;
+                    opacity: 1;
+                }
+                100%{
+                    bottom: -80px;
+                    opacity: 0;
+                }
+            }
+        </style>
     </head>
     <body>
-        <div class = "wrapper">
-            <div class = "title">
-                <div class = "title_label">
-                    <span>부스 호출 알림</span>
-                </div>
-            </div>
+        <iframe src = "/map.html" id = "page"></iframe>
+        <iframe src = "/navi.html" id = "navi"></iframe>
 
-            <div class = "map">
-                <div class = "map_board">
-                    <img src = "/img/layout.jpg">
-                    <div class = "sector">
-                        <span>SP2 MECH SUB</span>
-                    </div>
-                </div>
-            </div>
+        <iframe src = "/list.html" id = "list"></iframe>
 
-            <div class = "notice">
-                <iframe src = "navi.html" id = "navi"></iframe>
-
-                <div class = "alarm_box">
-                    <span class = "alarm_text"></span>
-                </div>
+        <div class = "alarm_area">
+            <div class = "alarm_box">
+                <span class = "alarm_text"></span>
             </div>
         </div>
 
         <script>
-            $(document).ready(function() {
-                setLocation();
+            var previousUrl = Array();
 
-                $(".sector").click(function() {
-                    window.location.href = "sector.html";
-                });
-            });
-
-            function setLocation(){
-                const imgWidth = $(".map img").width();
-                const imgHeight = $(".map img").height();
-
-                const top = (imgHeight / 9) * 4;
-                const left = imgWidth / 6;
-
-                const width = left * 4;
-                const height = (imgHeight / 9) * 2;
-
-                $(".sector").width(width);
-                $(".sector").height(height);
-                $(".sector").css("top", top);
-                $(".sector").css("left", left);
-            }
-
-            function turnOnSector(){
-                const sector = $(".sector");
+            function showAlarm(msg){
                 const alarmBox = $(".alarm_box");
                 const alarmText = $(".alarm_text");
 
-                if(!sector.hasClass("on")){
-                    sector.addClass("on");
-
-                    alarmText.text("SP2 MECH SUB에서 호출");
-                    alarmBox.addClass("show");
-                }
-            }
-
-            function turnOffSector(){
-                const sector = $(".sector");
-                const alarmBox = $(".alarm_box");
-
-                if(sector.hasClass("on")){
-                    sector.removeClass("on");
-                }
-
-                if(alarmBox.hasClass("show")){
-                    alarmBox.removeClass("show");
-                }
-            }
-
-            function getData(){
-                $.ajax({
-                    url: "/api/get_data.php",
-                    type: "GET",
-                    success: function(result){
-                        var data = JSON.parse(result);
-
-                        check = false;
-
-                        data.forEach(function(value){
-                            if(value == "1"){
-                                check = true;
-                            }
-                        });
-
-                        if(check){
-                            turnOnSector();
-                        }else{
-                            turnOffSector();
-                        }
-                    }
+                alarmText.text(msg);
+                alarmBox.addClass("show");
+                alarmBox.one("animationend", function(){
+                    $(this).removeClass("show");
                 });
             }
-
-            setInterval(getData, 1000);
         </script>
     </body>
 </html>

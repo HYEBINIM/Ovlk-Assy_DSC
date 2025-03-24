@@ -3,113 +3,158 @@
     <head>
         <meta charset = "UTF-8">
         <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
-        <link rel = "stylesheet" href = "/css/sector.css">
+        <link rel = "stylesheet" href = "/css/map.css">
         <script src = "/js/jquery-3.6.0.min.js"></script>
     </head>
     <body>
         <div class = "wrapper">
             <div class = "title">
-                <div class = "title_label">
-                    <span>SP2 MECH SUB AREA</span>
+                <div class = "logo">
+                    <img src = "/icon/siren.svg" width = "30" height = "30">
+                </div>
+
+                <div class = "text">
+                    <span>부스 호출 알림</span>
                 </div>
             </div>
 
             <div class = "map">
-                <div class = "map_board">
-                    <img src = "/img/layout_detail.jpg">
-                
-                    <div class = "lamp" id = "lamp1"><span>1</span></div>
-                    <div class = "lamp" id = "lamp2"><span>2</span></div>
-                    <div class = "lamp" id = "lamp3"><span>3</span></div>
-                    <div class = "lamp" id = "lamp4"><span>4</span></div>
-                    <div class = "lamp" id = "lamp5"><span>5</span></div>
-                    <div class = "lamp" id = "lamp6"><span>6</span></div>
-                    <div class = "lamp" id = "lamp7"><span>7</span></div>
-                    <div class = "lamp" id = "lamp8"><span>8</span></div>
-                </div>
-            </div>
-
-            <div class = "notice">
-                <div class = "nav">
-                
-                </div>
-
-                <div class = "alarm_box">
-                    <span class = "alarm_text"></span>
+                <div class = "map_bg">
+                    <!-- 부스 위치별 요소 추가 -->
                 </div>
             </div>
         </div>
 
         <script>
-            $(document).ready(function() {
-                drawLamps();
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const sectorValue = urlParams.get("sector");
+
+            $(document).ready(function(){
+                setPage();
+                getData();
             });
 
-            var lampLocation = [];
-            lampLocation[0] = [0.435, 0.905];
-            lampLocation[1] = [0.265, 0.905];
-            lampLocation[2] = [0.035, 0.905];
-            lampLocation[3] = [0.120, 0.765];
-            lampLocation[4] = [0.120, 0.645];
-            lampLocation[5] = [0.340, 0.080];
-            lampLocation[6] = [0.515, 0.080];
-            lampLocation[7] = [0.700, 0.055];
+            function setPage(){
+                const newImg = $('<img>', {
+                    src: "/img/sector_" + sectorValue + ".jpg"
+                }).on("load", function(){
+                    const imgWidth = $(".map_bg img").width();
+                    const imgHeight = $(".map_bg img").height();
 
-            var lampScale = [];
-            lampScale[0] = [0.13, 0.055];
-            lampScale[1] = [0.13, 0.055];
-            lampScale[2] = [0.13, 0.055];
-            lampScale[3] = [0.10, 0.070];
-            lampScale[4] = [0.10, 0.070];
-            lampScale[5] = [0.14, 0.055];
-            lampScale[6] = [0.14, 0.055];
-            lampScale[7] = [0.14, 0.055];
+                    const location = {};
+                    const scale = {};
 
-            function drawLamps(){
-                const lamps = $(".lamp");
-                const imgWidth = $(".map img").width();
-                const imgHeight = $(".map img").height();
+                    location[0] = {};
+                    location[0]["top"] = 0.466;
+                    location[0]["left"] = 0.092;
 
-                lamps.each(function(index) {
-                    let lamp = $(this);
+                    scale[0] = {};
+                    scale[0]["width"] = 0.134;
+                    scale[0]["height"] = 0.156;
 
-                    let top = imgHeight * lampLocation[index][1];
-                    let left = imgWidth * lampLocation[index][0];
+                    location[1] = {};
+                    location[1]["top"] = 0.281;
+                    location[1]["left"] = 0.092;
 
-                    let width = imgWidth * lampScale[index][0];
-                    let height = imgHeight * lampScale[index][1];
+                    scale[1] = {};
+                    scale[1]["width"] = 0.134;
+                    scale[1]["height"] = 0.156;
 
-                    lamp.css("top", top);
-                    lamp.css("left", left);
+                    location[2] = {};
+                    location[2]["top"] = 0.036;
+                    location[2]["left"] = 0.092;
 
-                    lamp.width(width);
-                    lamp.height(height);
+                    scale[2] = {};
+                    scale[2]["width"] = 0.134;
+                    scale[2]["height"] = 0.156;
+
+                    location[3] = {};
+                    location[3]["top"] = 0.129;
+                    location[3]["left"] = 0.392;
+
+                    scale[3] = {};
+                    scale[3]["width"] = 0.174;
+                    scale[3]["height"] = 0.111;
+
+                    location[4] = {};
+                    location[4]["top"] = 0.129;
+                    location[4]["left"] = 0.676;
+
+                    scale[4] = {};
+                    scale[4]["width"] = 0.174;
+                    scale[4]["height"] = 0.111;
+
+                    location[5] = {};
+                    location[5]["top"] = 0.285;
+                    location[5]["left"] = 0.354;
+
+                    scale[5] = {};
+                    scale[5]["width"] = 0.155;
+                    scale[5]["height"] = 0.125;
+
+                    location[6] = {};
+                    location[6]["top"] = 0.449;
+                    location[6]["left"] = 0.354;
+
+                    scale[6] = {};
+                    scale[6]["width"] = 0.155;
+                    scale[6]["height"] = 0.125;
+
+                    location[7] = {};
+                    location[7]["top"] = 0.616;
+                    location[7]["left"] = 0.420;
+
+                    scale[7] = {};
+                    scale[7]["width"] = 0.155;
+                    scale[7]["height"] = 0.125;
+
+                    if(sectorValue == "1"){
+                        for(let i = 0; i < 5; i++){
+                            var newBooth = $("<div></div>", {
+                                id: "booth_" + (i + 1),
+                                class: "booth",
+                                css:{
+                                    top: imgHeight * location[i]["top"],
+                                    left: imgWidth * location[i]["left"],
+                                    width: imgWidth * scale[i]["width"],
+                                    height: imgHeight * scale[i]["height"]
+                                }
+                            });
+
+                            var newSpan = $("<span></span>", {
+                                text: (i + 1)
+                            });
+
+                            newBooth.append(newSpan);
+
+                            $(".map_bg").append(newBooth);
+                        }
+                    }else if(sectorValue == "2"){
+                        for(let i = 5; i < 8; i++){
+                            var newBooth = $("<div></div>", {
+                                id: "booth_" + (i + 1),
+                                class: "booth",
+                                css:{
+                                    top: imgHeight * location[i]["top"],
+                                    left: imgWidth * location[i]["left"],
+                                    width: imgWidth * scale[i]["width"],
+                                    height: imgHeight * scale[i]["height"]
+                                }
+                            });
+
+                            var newSpan = $("<span></span>", {
+                                text: (i + 1)
+                            });
+
+                            newBooth.append(newSpan);
+
+                            $(".map_bg").append(newBooth);
+                        }
+                    }
                 });
-            }
 
-            function turnOnLamp(number){
-                const lamp = $("#lamp" + number);
-                const alarmBox = $(".alarm_box");
-                const alarmText =$(".alarm_text");
-
-                if(!lamp.hasClass("on")){
-                    lamp.addClass("on");
-
-                    alarmText.text(number + "번 부스에서 호출");
-                    alarmBox.addClass("show");
-                    alarmBox.one("animationend", function(){
-                        $(this).removeClass("show");
-                    })
-                }
-            }
-
-            function turnOffLamp(number){
-                const lamp = $("#lamp" + number);
-                const alarmBox = $(".alarm_box");
-
-                if(lamp.hasClass("on")){
-                    lamp.removeClass("on");
-                }
+                $(".map_bg").append(newImg);
             }
 
             function getData(){
@@ -119,13 +164,39 @@
                     success: function(result){
                         var data = JSON.parse(result);
 
-                        data.forEach(function(value, index){
-                            if(value == "1"){
-                                turnOnLamp(index + 1);
-                            }else{
-                                turnOffLamp(index + 1);
+                        if(sectorValue == "1"){
+                            for(idx = 0; idx < 5; idx++){
+                                var boothID = "booth_" + (idx + 1);
+
+                                if(data[idx] == "1"){
+                                    if($("#" + boothID).hasClass("on") == false){
+                                        $("#" + boothID).addClass("on");
+
+                                        window.parent.showAlarm((idx + 1) + "번 부스에서 호출");
+                                    }
+                                }else{
+                                    if($("#" + boothID).hasClass("on") == true){
+                                        $("#" + boothID).removeClass("on");
+                                    }
+                                }
                             }
-                        });
+                        }else if(sectorValue == "2"){
+                            for(idx = 5; idx < 8; idx++){
+                                var boothID = "booth_" + (idx + 1);
+
+                                if(data[idx] == "1"){
+                                    if($("#" + boothID).hasClass("on") == false){
+                                        $("#" + boothID).addClass("on");
+
+                                        window.parent.showAlarm((idx + 1) + "번 부스에서 호출");
+                                    }
+                                }else{
+                                    if($("#" + boothID).hasClass("on") == true){
+                                        $("#" + boothID).removeClass("on");
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
             }

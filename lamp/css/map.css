@@ -1,0 +1,151 @@
+@font-face{
+    font-family: "G-bold";
+    src: url("/font/GmarketSansTTFBold.ttf") format("truetype");
+}
+
+@font-face{
+    font-family: "G-medium";
+    src: url("/font/GmarketSansTTFMedium.ttf") format("truetype");
+}
+
+@font-face{
+    font-family: "G-light";
+    src: url("/font/GmarketSansTTFLight.ttf") format("truetype");
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    width: 100%;
+    height: 100vh;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.wrapper{
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-rows: 1fr 10fr;
+    place-items: center;
+
+    background-color: white;
+}
+
+.title{
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    place-items: center;
+
+    background-color: #1E90FF;
+}
+
+.logo, .text{
+    width: auto;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text{
+    justify-self: end;
+
+    margin-right: 8vw;
+}
+
+.text span{
+    color: white;
+    font-family: "G-bold";
+    font-size: 22px;
+}
+
+.map{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.map_bg{
+    width: auto;
+    height: auto;
+
+    position: relative;
+}
+
+.map_bg img{
+    width: 95vw;
+    height: auto;
+}
+
+.sector{
+    z-index: 100;
+
+    position: absolute;
+
+    display: none;
+
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.sector.on{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    animation: blink 1.5s infinite;
+}
+
+.sector span{
+    color: white;
+    font-family: "G-medium";
+    font-size: 18px;
+}
+
+.booth{
+    z-index: 100;
+
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 200, 80, 0.7);
+}
+
+.booth.on{
+    background-color: rgba(255, 0, 0, 0.5);
+
+    animation: blink 0.7s infinite;
+}
+
+.booth span{
+    color: white;
+    font-family: "G-bold";
+    font-size: 20px;
+}
+
+@keyframes blink{
+    0%, 100%{
+        opacity: 1;
+    }
+    50%{
+        opacity: 0;
+    }
+}
