@@ -14,9 +14,7 @@ ex) 조립 2차 라인에서 LH 코드가 스캔되었다면, index_code 테이�
 
 의존성 관련
 mysql-connector-python: 8.4.0
-1. pyinstaller --onefile --hidden-import=mysql.connector scan_roll_n.py
-2. scan_roll_n.spec에서 hidden-import 부분 mysql.connector.plugins.mysql_native_password로 변경
-3. pyinstaller scan_roll_n.spec
+pyinstaller --onefile --hidden-import=mysql.connector.plugins.mysql_native_password scan_n_m.py
 
 <main> DB 업데이트 코드
 파일 이름은 main_[lh/rh].py

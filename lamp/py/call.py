@@ -1,4 +1,4 @@
-# DB 관련 모듈
+# DB 관련 모듈 (ver 8.4.0)
 import mysql.connector
 from mysql.connector import Error
 

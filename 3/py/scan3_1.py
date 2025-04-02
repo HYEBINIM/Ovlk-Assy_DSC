@@ -169,10 +169,10 @@ def scan():
                         assy_cursor.execute(query_pre)
                         pre_record = assy_cursor.fetchone()
 
-                        # 스캔 데이터에서 업체 코드 기준으로 prefix와 suffix 구분
+                        # 스캔 데이터에서 업체 영역 기준으로 prefix와 suffix 구분
                         fix = devide_code(data)
 
-                        # 조립 1차 DB에서 업체 코드 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
+                        # 조립 1차 DB에서 업체 영역 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
                         query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 LIKE '{fix['prefix']}%' AND data0 LIKE '%{fix['suffix']}' ORDER BY date DESC, time DESC LIMIT 1"
                         jig_cursor.execute(query_jig)
                         jig_record = jig_cursor.fetchone()
