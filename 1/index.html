@@ -225,30 +225,7 @@
 
                 <button class="reset">COUNT RESET</button>
                 <button class="auto">AUTO MODE</button>
-
-                <div class="ctrl_pad">
-                    <button id="barcode_button">Barcode<br>Setting</button>
-                    <button><img src="/img/search.svg" /></button>
-                    <button><img src="/img/port.svg" /></button>
-                    <button><img src="/img/keyboard.svg" /></button>
-                    <button id="part_button"><img src="/img/setting.svg" /></button>
-                    <button onClick = "window.close()"><img src="/img/power.svg" /></button>
-                </div>
             </div>
-        </div>
-
-        <!-- 오버레이, 모달창 추가 -->
-        <div id="part_overlay" class="overlay"></div>
-        <div id="part_modal" class="modal">
-            <div class="close"><span class="btn_close" id="part_close">&times;</span></div>
-            <iframe src="/page/part.html"></iframe>
-        </div>
-
-
-        <div id="barcode_overlay" class="overlay"></div>
-        <div id="barcode_modal" class="modal">
-            <div class="close"><span class="btn_close" id="barcode_close">&times;</span></div>
-            <iframe src="/page/barcode.html"></iframe>
         </div>
     </div>
 
@@ -418,46 +395,6 @@
         setInterval(updateClock, 1000);
         setInterval(updateData, 1000);
         setInterval(updateCount, 1000);
-
-        // 모달창 제어
-        // 모달 제어
-        const partButton = document.getElementById('part_button');
-        const barcodeButton = document.getElementById('barcode_button');
-        const partOverlay = document.getElementById('part_overlay');
-        const barcodeOverlay = document.getElementById('barcode_overlay');
-        const partModal = document.getElementById('part_modal');
-        const barcodeModal = document.getElementById('barcode_modal');
-        const partClose = document.getElementById('part_close');
-        const barcodeClose = document.getElementById('barcode_close');
-
-        partButton.onclick = function () {
-            partOverlay.style.display = "flex";
-            partModal.style.display = "flex";
-        }
-
-        barcodeButton.onclick = function () {
-            barcodeOverlay.style.display = "flex";
-            barcodeModal.style.display = "flex";
-        }
-
-        partClose.onclick = function () {
-            partOverlay.style.display = "none";
-            partModal.style.display = "none";
-        }
-
-        barcodeClose.onclick = function () {
-            barcodeOverlay.style.display = "none";
-            barcodeModal.style.display = "none";
-        }
-
-        window.onclick = function (event) {
-            if (event.target == partModal) {
-                partModal.style.display = "none";
-            }
-            if (event.target == barcodeModal) {
-                barcodeModal.style.display = "none";
-            }
-        }
     </script>
 </body>
 
