@@ -214,7 +214,7 @@ def read_plc_data():
 
 # 업데이트가 중지된 동안 새로운 scan값이 들어오는지 관찰하는 메소드
 def check_new_data():
-    # 가장 최근 데이터의 DATA1 - DATA6의 값이 None 타입일 때 새로운 scan값이 들어온 것으로 간주
+    # 가장 최근 데이터의 DATA1 - DATA6, DATA11 - DATA13의 값이 None 타입일 때 새로운 scan값이 들어온 것으로 간주
     db = mysql.connector.connect(**assy_db_config)
     cursor = db.cursor(dictionary = True)
 

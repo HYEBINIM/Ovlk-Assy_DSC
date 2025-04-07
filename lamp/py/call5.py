@@ -16,7 +16,7 @@ local_db_config = {
 
 # 호출 신호를 보낼 kiosk DB
 kiosk_db_config = {
-    "host": "192.168.200.2",
+    "host": "192.168.150.5",
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
@@ -48,7 +48,7 @@ def read_call_data():
         return
     
     # read data (plc)
-    select_query = "SELECT data0 FROM guide1 WHERE id = 17"
+    select_query = "SELECT data0 FROM guide1 WHERE id = 13"
 
     local_cursor.execute(select_query)
     local_record = local_cursor.fetchone()
@@ -56,9 +56,9 @@ def read_call_data():
     if local_record:
         update_query = ""
         if local_record['data0'] == "1":
-            update_query = "UPDATE call1 SET data0 = 1 WHERE id = 1"
+            update_query = "UPDATE call1 SET data4 = 1 WHERE id = 1"
         else:
-            update_query = "UPDATE call1 SET data0 = 0 WHERE id = 1"
+            update_query = "UPDATE call1 SET data4 = 0 WHERE id = 1"
         
         if update_query:
             kiosk_cursor.execute(update_query)
