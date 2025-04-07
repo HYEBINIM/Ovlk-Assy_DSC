@@ -1,3 +1,5 @@
+# 2025.04.07: 사운드 딜레이 감소를 위해 soudn.play() 이후 time.sleep(0.1)로 축소, polling_interval = 0.5로 감소
+
 # DB 관련 모듈
 import mysql.connector
 from mysql.connector import Error
@@ -53,7 +55,7 @@ def read_input_data():
     if record['data1'] == "1":
         play_sound(ok_sound)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         update_query = "UPDATE input1 SET data1 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -61,7 +63,7 @@ def read_input_data():
     elif record['data1'] == "2":
         play_sound(ng_sound)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         update_query = "UPDATE input1 SET data1 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -70,7 +72,7 @@ def read_input_data():
     if record['data3'] == "1":
         play_sound(ok_sound)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         update_query = "UPDATE input1 SET data3 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -78,7 +80,7 @@ def read_input_data():
     elif record['data3'] == "2":
         play_sound(ng_sound)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
 
         update_query = "UPDATE input1 SET data3 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -88,7 +90,7 @@ def read_input_data():
     db.close()
     print("DB Disconnected...")
 
-polling_interval = 1
+polling_interval = 0.5
 
 while True:
     read_input_data()

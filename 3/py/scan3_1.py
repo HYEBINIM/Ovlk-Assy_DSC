@@ -180,18 +180,6 @@ def scan():
                         jig = jig_record['data9']
                         index = jig_record['data10']
 
-                        # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
-                        torque = get_torque(data)
-                        if torque != "00.000.0":
-                            # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
-                            if pre_record['data9'] == "C" or pre_record['data9'] == "D":
-                                query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
-                            else:
-                                query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-                            
-                            main_cursor.execute(query_update)
-                            main_db.commit()
-
                         cur = time.localtime()
                         cur_date = time.strftime("%Y-%m-%d", cur)
                         cur_time = time.strftime("%H:%M:%S", cur)
@@ -206,7 +194,19 @@ def scan():
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
-                        
+
+                            # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
+                            torque = get_torque(data)
+                            if torque != "00.000.0":
+                                # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
+                                if pre_record['data9'] == "C" or pre_record['data9'] == "D":
+                                    query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
+                                else:
+                                    query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                                
+                                main_cursor.execute(query_update)
+                                main_db.commit()
+
                         main_cursor.close()
                         main_db.close()
                         print("Main DB Disconnected...")
