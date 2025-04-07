@@ -184,19 +184,22 @@ def scan():
                         cur_date = time.strftime("%Y-%m-%d", cur)
                         cur_time = time.strftime("%H:%M:%S", cur)
 
+                        # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
+                        torque = get_torque(data)
+
                         # 새로운 스캔 데이터인 경우 INSERT
                         if not compare_data(pre_record['data0'], data):
-                            query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
-                            assy_cursor.execute(query_insert)
-                            assy_db.commit()
+                            # 신규 데이터는 토크값이 없음
+                            if torque == "00.000.0":
+                                query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
+                                assy_cursor.execute(query_insert)
+                                assy_db.commit()
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
-
-                            # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
-                            torque = get_torque(data)
+                            # 출하 바코드는 토크값이 있음
                             if torque != "00.000.0":
                                 # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
                                 if pre_record['data9'] == "C" or pre_record['data9'] == "D":
