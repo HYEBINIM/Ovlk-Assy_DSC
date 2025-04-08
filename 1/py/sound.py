@@ -1,5 +1,3 @@
-# 2025.04.07: 사운드 딜레이 감소를 위해 soudn.play() 이후 time.sleep(0.1)로 축소, polling_interval = 0.5로 감소
-
 # DB 관련 모듈
 import mysql.connector
 from mysql.connector import Error
@@ -23,13 +21,12 @@ db_config = {
 pygame.mixer.init()
 
 # 사운드 파일 정의
-ok_sound = "../sound/DINGDONG.wav"
-ng_sound = "../sound/NG.wav"
+ok_sound_file = "../sound/DINGDONG.wav"
+ng_sound_file = "../sound/NG.wav"
 
-# 사운드 재생 메소드
-def play_sound(sound_file):
-    pygame.mixer.music.load(sound_file)
-    pygame.mixer.music.play()
+# 사운드 파일 로드
+ok_sound = pygame.mixer.Sound(ok_sound_file)
+ng_sound = pygame.mixer.Sound(ng_sound_file)
 
 # 너트러너 합불값 체크 메소드
 def read_input_data():
@@ -53,7 +50,7 @@ def read_input_data():
     record = cursor.fetchone()
 
     if record['data1'] == "1":
-        play_sound(ok_sound)
+        ok_sound.play()
 
         time.sleep(0.1)
 
@@ -61,7 +58,7 @@ def read_input_data():
         cursor.execute(update_query)
         db.commit()
     elif record['data1'] == "2":
-        play_sound(ng_sound)
+        ng_sound.play()
 
         time.sleep(0.1)
 
@@ -70,7 +67,7 @@ def read_input_data():
         db.commit()
 
     if record['data3'] == "1":
-        play_sound(ok_sound)
+        ok_sound.play()
 
         time.sleep(0.1)
 
@@ -78,7 +75,7 @@ def read_input_data():
         cursor.execute(update_query)
         db.commit()
     elif record['data3'] == "2":
-        play_sound(ng_sound)
+        ng_sound.play()
 
         time.sleep(0.1)
 

@@ -34,13 +34,12 @@ assy_db_config = {
 pygame.mixer.init()
 
 # 사운드 파일 정의
-ok_sound = "../sound/DINGDONG.wav"
-ng_sound = "../sound/NG.wav"
+ok_sound_file = "../sound/DINGDONG.wav"
+ng_sound_file = "../sound/NG.wav"
 
-# 사운드 재생 메소드
-def play_sound(sound_file):
-    pygame.mixer.music.load(sound_file)
-    pygame.mixer.music.play()
+# 사운드 파일 로드
+ok_sound = pygame.mixer.Sound(ok_sound_file)
+ng_sound = pygame.mixer.Sound(ng_sound_file)
 
 # 시작 시점에 running의 값을 정하는 메소드
 def init_running():
@@ -160,10 +159,10 @@ def read_plc_data():
 
             if last_val == '1':
                 if last_col != "data3" and last_col != "data4":
-                    play_sound(ok_sound)
+                    ok_sound.play()
             elif last_val == '2':
                 if last_col != "data3" and last_col != "data4":
-                    play_sound(ng_sound)
+                    ng_sound.play()
 
             if not running:
                 complete_query = "UPDATE assy1read SET data9 = 1, contents1 = 20 WHERE id = 2"
