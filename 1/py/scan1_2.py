@@ -191,7 +191,7 @@ def scan():
                             assy_db.commit()
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
-                            query_duplication = f"UPDATE {table} SET to,e = '{cur_time}' WHERE id = {pre_record['id']}"
+                            query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
 

@@ -75,7 +75,7 @@ def compare_data(pre_data, new_data):
 def get_torque(data):
     data_split = data.split(chr(29))
 
-    torque = data[7]
+    torque = data_split[7]
 
     return torque
 
@@ -190,17 +190,21 @@ def scan():
                         # 새로운 스캔 데이터인 경우 INSERT
                         if not compare_data(pre_record['data0'], data):
                             # 신규 데이터는 토크값이 없음
-                            if torque == "00.000.0":
+                            if "00.000.0" in torque:
                                 query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                                 assy_cursor.execute(query_insert)
                                 assy_db.commit()
+
+                                query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                                main_cursor.execute(query_update)
+                                main_db.commit()
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
                             # 출하 바코드는 토크값이 있음
-                            if torque != "00.000.0":
+                            if not ("00.000.0" in torque):
                                 # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
                                 if pre_record['data9'] == "C" or pre_record['data9'] == "D":
                                     query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
