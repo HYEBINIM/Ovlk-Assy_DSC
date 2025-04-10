@@ -13,7 +13,11 @@
         <div class="title_sect">
             <span class="title">Ov1k CUSH Process</span>
             <span class="clock"></span>
-            <div class="logo"></div>
+            <div class="logo">
+                <button class = "power" onclick = "window.close()">
+                    <img src = "/img/power.svg" width = "25" height = "25">
+                </button>
+            </div>
         </div>
 
         <div class="content_sect">
@@ -28,44 +32,9 @@
                         <div class="conclusion">
                             <span id="conclusion_lh"></span>
                         </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 1</span>
-                            <span id = "tq1_lh"></span>
-                        </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 2</span>
-                            <span id = "tq2_lh"></span>
-                        </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 3</span>
-                            <span id = "tq3_lh"></span>
-                        </div>
                     </div>
 
                     <div class="point">
-                        <div class="row">
-                            <div class="label">
-                                <span>T/Q</span>
-                            </div>
-
-                            <div class="value">
-                                <span></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="label">
-                                <span>SPEC</span>
-                            </div>
-
-                            <div class="value">
-                                <span>8.8 - 10.8 Nm</span>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="label">
                                 <span>살</span>
@@ -78,7 +47,7 @@
 
                         <div class="row">
                             <div class="label">
-                                <span>헤드</span>
+                                <span>헤드 1</span>
                             </div>
 
                             <div class="value">
@@ -88,11 +57,51 @@
 
                         <div class="row">
                             <div class="label">
-                                <span>너트</span>
+                                <span>헤드 2</span>
                             </div>
 
                             <div class="value">
                                 <span id="data3_lh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>너트</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="data4_lh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>토크 1</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="tq1_lh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>토크 2</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="tq2_lh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>토크 3</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="tq3_lh"></span>
                             </div>
                         </div>
                     </div>
@@ -110,44 +119,9 @@
                         <div class="conclusion">
                             <span id="conclusion_rh"></span>
                         </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 1</span>
-                            <span id = "tq1_rh"></span>
-                        </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 2</span>
-                            <span id = "tq2_rh"></span>
-                        </div>
-
-                        <div class = "tq_box">
-                            <span id = "tq_title">토크 3</span>
-                            <span id = "tq3_rh"></span>
-                        </div>
                     </div>
 
                     <div class="point">
-                        <div class="row">
-                            <div class="label">
-                                <span>T/Q</span>
-                            </div>
-
-                            <div class="value">
-                                <span></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="label">
-                                <span>SPEC</span>
-                            </div>
-
-                            <div class="value">
-                                <span>8.8 - 10.8 Nm</span>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="label">
                                 <span>살</span>
@@ -160,7 +134,7 @@
 
                         <div class="row">
                             <div class="label">
-                                <span>헤드 1</span>
+                                <span>헤드</span>
                             </div>
 
                             <div class="value">
@@ -170,7 +144,7 @@
 
                         <div class="row">
                             <div class="label">
-                                <span>헤드 2</span>
+                                <span>너트</span>
                             </div>
 
                             <div class="value">
@@ -180,190 +154,96 @@
 
                         <div class="row">
                             <div class="label">
-                                <span>너트</span>
+                                <span>토크 1</span>
                             </div>
 
                             <div class="value">
-                                <span id="data4_rh"></span>
+                                <span id="tq1_rh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>토크 2</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="tq2_rh"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="label">
+                                <span>토크 3</span>
+                            </div>
+
+                            <div class="value">
+                                <span id="tq3_rh"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="cnt_frame">
-                <span class="frame_title">COUNT</span>
+            <div class = "rank_frame">
+                <span class = "frame_title">RANK IMAGE</span>
 
-                <div class="table_header">
-                    <div class="idx">
-                        <span>Idx</span>
-                    </div>
-
-                    <div class="dir">
-                        <span>Dir</span>
-                    </div>
-
-                    <div class="part_no">
-                        <span>Part No.</span>
-                    </div>
-
-                    <div class="count">
-                        <span>Count</span>
-                    </div>
-                </div>
-
-                <div class="table_bg">
-                    <table class="cnt_table">
-                    </table>
-                </div>
-
-                <button class="reset">COUNT RESET</button>
-                <button class="auto">AUTO MODE</button>
+                <div id = "img_rank"></div>
             </div>
         </div>
 
-        <div class="control_sect">
-            <div class="plc_lh">
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6000</span></div>
-                    <div class="plc_label"><span>D6005</span></div>
-                    <div class="plc_label"><span>D6010</span></div>
-                    <div class="plc_label"><span>D6015</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+        <div class = "list_sect">
+            <span class = "frame_title">Recent result</span>
+
+            <div class = "table_header">
+                <div class = "dir">
+                    <span>Dir</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6001</span></div>
-                    <div class="plc_label"><span>D6006</span></div>
-                    <div class="plc_label"><span>D6011</span></div>
-                    <div class="plc_label"><span>D6016</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "count">
+                    <span>Count</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6002</span></div>
-                    <div class="plc_label"><span>D6007</span></div>
-                    <div class="plc_label"><span>D6012</span></div>
-                    <div class="plc_label"><span>D6017</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "data1">
+                    <span>살</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6003</span></div>
-                    <div class="plc_label"><span>D6008</span></div>
-                    <div class="plc_label"><span>D6013</span></div>
-                    <div class="plc_label"><span>D6018</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "data2">
+                    <span>헤드 1</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6004</span></div>
-                    <div class="plc_label"><span>D6009</span></div>
-                    <div class="plc_label"><span>D6014</span></div>
-                    <div class="plc_label"><span>D6019</span></div>
+                <div class = "data3">
+                    <span>헤드 2</span>
                 </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+
+                <div class = "data4">
+                    <span>너트</span>
+                </div>
+
+                <div class = "data5">
+                    <span>토크 1</span>
+                </div>
+
+                <div class = "data6">
+                    <span>토크 2</span>
+                </div>
+
+                <div class = "data7">
+                    <span>토크 3</span>
+                </div>
+
+                <div class = "data8">
+                    <span>전체</span>
+                </div>
+
+                <div class = "data9">
+                    <span>등급</span>
                 </div>
             </div>
 
-            <div class="plc_rh">
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6000</span></div>
-                    <div class="plc_label"><span>D6005</span></div>
-                    <div class="plc_label"><span>D6010</span></div>
-                    <div class="plc_label"><span>D6015</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6001</span></div>
-                    <div class="plc_label"><span>D6006</span></div>
-                    <div class="plc_label"><span>D6011</span></div>
-                    <div class="plc_label"><span>D6016</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6002</span></div>
-                    <div class="plc_label"><span>D6007</span></div>
-                    <div class="plc_label"><span>D6012</span></div>
-                    <div class="plc_label"><span>D6017</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6003</span></div>
-                    <div class="plc_label"><span>D6008</span></div>
-                    <div class="plc_label"><span>D6013</span></div>
-                    <div class="plc_label"><span>D6018</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6004</span></div>
-                    <div class="plc_label"><span>D6009</span></div>
-                    <div class="plc_label"><span>D6014</span></div>
-                    <div class="plc_label"><span>D6019</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-            </div>
-
-            <div class="ctrl_pad">
-                <button id="barcode_button">Barcode<br>Setting</button>
-                <button><img src="/img/search.svg" /></button>
-                <button><img src="/img/port.svg" /></button>
-                <button><img src="/img/keyboard.svg" /></button>
-                <button id="part_button"><img src="/img/setting.svg" /></button>
-                <button onClick = "window.close()"><img src="/img/power.svg" /></button>
+            <div class = "table_bg">
+                <table class = "list_table">
+                </table>
             </div>
         </div>
     </div>
@@ -372,6 +252,7 @@
         $(document).ready(function () {
             updateClock();
             updateData();
+            updateList();
         });
 
         function updateClock() {
@@ -387,9 +268,18 @@
                 url: "/api/get_data.php",
                 type: "POST",
                 success: function (result) {
-                    var data = JSON.parse(result)[0];
-                    var torqueStr = JSON.parse(result)[1];
-                    var torqueArr = torqueStr.split(",");
+                    var dataAll = JSON.parse(result);
+                    var data = dataAll[0];
+                    var torqueStr = dataAll[1];
+                    var regex = /(\d+\.\d{2})/g; // 소수점 두 자리까지의 실수를 찾는 정규 표현식
+                    var matches = torqueStr.match(regex);
+
+                    var torqueArr = Array();
+                    if (matches && matches.length === 3) {
+                        torqueArr[0] = parseFloat(matches[0]);
+                        torqueArr[1] = parseFloat(matches[1]);
+                        torqueArr[2] = parseFloat(matches[2]);
+                    }
 
                     var dir = data[0];
 
@@ -409,7 +299,7 @@
                             }
                         }
 
-                        for(i = 1; i <= 4; i++){
+                        for(i = 1; i <= 3; i++){
                             let idRH = "data" + i + "_rh";
 
                             $("#" + idRH).text("");
@@ -454,7 +344,7 @@
                             }
                         }
 
-                        for(i = 1; i <= 3; i++){
+                        for(i = 1; i <= 4; i++){
                             let idLH = "data" + i + "_lh";
 
                             $("#" + idLH).text("");
@@ -484,12 +374,33 @@
                         $("#tq2_rh").text(torqueArr[1]);
                         $("#tq3_rh").text(torqueArr[2]);
                     }
+
+                    $("#img_rank").css("background-image", "url('C:/Users/cv/Documents/FTP/image1/1.jpg')");
+                    $("#img_rank").css("background-size", "cover");
+                }
+            });
+        }
+
+        function updateList(){
+            $.ajax({
+                url: "/api/get_recent_result.php",
+                type: "POST",
+                success: function(result){
+                    var data = JSON.parse(result);
+
+                    const listTable = $(".list_table");
+                    listTable.empty();
+
+                    for(i = 0; i < data.length; i++){
+                        listTable.append("<tr><td>" + data[i]['dir'] + "</td><td>" + data[i]['count'] + "</td><td>" + data[i]['data1'] + "</td><td>" + data[i]['data2'] + "</td><td>" + data[i]['data3'] + "</td><td>" + data[i]['data4'] + "</td><td>" + data[i]['data5'] + "</td><td>" + data[i]['data6'] + "</td><td>" + data[i]['data7'] + "</td><td>" + data[i]['data8'] + "</td><td>" + data[i]['data9'] + "</td></tr>");
+                    }
                 }
             });
         }
 
         setInterval(updateClock, 1000);
         setInterval(updateData, 1000);
+        setInterval(updateList, 1000);
     </script>
 </body>
 

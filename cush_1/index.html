@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang = "ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/assy.css">
-    <script src="/js/jquery-3.6.0.min.js"></script>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <link rel = "stylesheet" href = "/css/assy.css">
+    <script src = "/js/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -13,7 +13,11 @@
         <div class="title_sect">
             <span class="title">Ov1k CUSH Process</span>
             <span class="clock"></span>
-            <div class="logo"></div>
+            <div class="logo">
+                <button class = "power" onclick = "window.close()">
+                    <img src = "/img/power.svg" width = "25" height = "25">
+                </button>
+            </div>
         </div>
 
         <div class="content_sect">
@@ -31,26 +35,6 @@
                     </div>
 
                     <div class="point">
-                        <div class="row">
-                            <div class="label">
-                                <span>T/Q</span>
-                            </div>
-
-                            <div class="value">
-                                <span></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="label">
-                                <span>SPEC</span>
-                            </div>
-
-                            <div class="value">
-                                <span>8.8 - 10.8 Nm</span>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="label">
                                 <span>부쉬</span>
@@ -110,26 +94,6 @@
                     <div class="point">
                         <div class="row">
                             <div class="label">
-                                <span>T/Q</span>
-                            </div>
-
-                            <div class="value">
-                                <span></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="label">
-                                <span>SPEC</span>
-                            </div>
-
-                            <div class="value">
-                                <span>8.8 - 10.8 Nm</span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="label">
                                 <span>부쉬</span>
                             </div>
 
@@ -171,179 +135,53 @@
                 </div>
             </div>
 
-            <div class="cnt_frame">
-                <span class="frame_title">COUNT</span>
+            <div class = "rank_frame">
+                <span class = "frame_title">RANK IMAGE</span>
 
-                <div class="table_header">
-                    <div class="idx">
-                        <span>Idx</span>
-                    </div>
-
-                    <div class="dir">
-                        <span>Dir</span>
-                    </div>
-
-                    <div class="part_no">
-                        <span>Part No.</span>
-                    </div>
-
-                    <div class="count">
-                        <span>Count</span>
-                    </div>
-                </div>
-
-                <div class="table_bg">
-                    <table class="cnt_table">
-                    </table>
-                </div>
-
-                <button class="reset">COUNT RESET</button>
-                <button class="auto">AUTO MODE</button>
+                <div id = "img_rank"></div>
             </div>
         </div>
 
-        <div class="control_sect">
-            <div class="plc_lh">
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6000</span></div>
-                    <div class="plc_label"><span>D6005</span></div>
-                    <div class="plc_label"><span>D6010</span></div>
-                    <div class="plc_label"><span>D6015</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+        <div class = "list_sect">
+            <span class = "frame_title">Recent result</span>
+
+            <div class = "table_header">
+                <div class = "dir">
+                    <span>Dir</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6001</span></div>
-                    <div class="plc_label"><span>D6006</span></div>
-                    <div class="plc_label"><span>D6011</span></div>
-                    <div class="plc_label"><span>D6016</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "count">
+                    <span>Count</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6002</span></div>
-                    <div class="plc_label"><span>D6007</span></div>
-                    <div class="plc_label"><span>D6012</span></div>
-                    <div class="plc_label"><span>D6017</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "data1">
+                    <span>부쉬</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6003</span></div>
-                    <div class="plc_label"><span>D6008</span></div>
-                    <div class="plc_label"><span>D6013</span></div>
-                    <div class="plc_label"><span>D6018</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+                <div class = "data2">
+                    <span>스펀지</span>
                 </div>
 
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6004</span></div>
-                    <div class="plc_label"><span>D6009</span></div>
-                    <div class="plc_label"><span>D6014</span></div>
-                    <div class="plc_label"><span>D6019</span></div>
+                <div class = "data3">
+                    <span>스프링</span>
                 </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
+
+                <div class = "data4">
+                    <span>조립</span>
+                </div>
+
+                <div class = "data5">
+                    <span>전체</span>
+                </div>
+
+                <div class = "data6">
+                    <span>등급</span>
                 </div>
             </div>
 
-            <div class="plc_rh">
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6000</span></div>
-                    <div class="plc_label"><span>D6005</span></div>
-                    <div class="plc_label"><span>D6010</span></div>
-                    <div class="plc_label"><span>D6015</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6001</span></div>
-                    <div class="plc_label"><span>D6006</span></div>
-                    <div class="plc_label"><span>D6011</span></div>
-                    <div class="plc_label"><span>D6016</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6002</span></div>
-                    <div class="plc_label"><span>D6007</span></div>
-                    <div class="plc_label"><span>D6012</span></div>
-                    <div class="plc_label"><span>D6017</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6003</span></div>
-                    <div class="plc_label"><span>D6008</span></div>
-                    <div class="plc_label"><span>D6013</span></div>
-                    <div class="plc_label"><span>D6018</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-
-                <div class="plc_label_area">
-                    <div class="plc_label"><span>D6004</span></div>
-                    <div class="plc_label"><span>D6009</span></div>
-                    <div class="plc_label"><span>D6014</span></div>
-                    <div class="plc_label"><span>D6019</span></div>
-                </div>
-                <div class="plc_value_area">
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                    <div class="plc_value"><span></span></div>
-                </div>
-            </div>
-
-            <div class="ctrl_pad">
-                <button id="barcode_button">Barcode<br>Setting</button>
-                <button><img src="/img/search.svg" /></button>
-                <button><img src="/img/port.svg" /></button>
-                <button><img src="/img/keyboard.svg" /></button>
-                <button id="part_button"><img src="/img/setting.svg" /></button>
-                <button onClick = "window.close()"><img src="/img/power.svg" /></button>
+            <div class = "table_bg">
+                <table class = "list_table">
+                </table>
             </div>
         </div>
     </div>
@@ -444,8 +282,26 @@
             });
         }
 
+        function updateList(){
+            $.ajax({
+                url: "/api/get_recent_result.php",
+                type: "POST",
+                success: function(result){
+                    var data = JSON.parse(result);
+
+                    const listTable = $(".list_table");
+                    listTable.empty();
+
+                    for(i = 0; i < data.length; i++){
+                        listTable.append("<tr><td>" + data[i]['dir'] + "</td><td>" + data[i]['count'] + "</td><td>" + data[i]['data1'] + "</td><td>" + data[i]['data2'] + "</td><td>" + data[i]['data3'] + "</td><td>" + data[i]['data4'] + "</td><td>" + data[i]['data5'] + "</td><td>" + data[i]['data6'] + "</td></tr>");
+                    }
+                }
+            });
+        }
+
         setInterval(updateClock, 1000);
         setInterval(updateData, 1000);
+        setInterval(updateList, 1000);
     </script>
 </body>
 

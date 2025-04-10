@@ -19,6 +19,7 @@
 
         array_push($data, $record['data2']);
         array_push($data, $record['data3']);
+        array_push($data, $record['data4']);
         array_push($data, $record['data5']);
         array_push($data, $record['data7']);
     }elseif($record['data9'] == "2"){
@@ -26,7 +27,6 @@
 
         array_push($data, $record['data2']);
         array_push($data, $record['data3']);
-        array_push($data, $record['data4']);
         array_push($data, $record['data5']);
         array_push($data, $record['data7']);
     }else{
