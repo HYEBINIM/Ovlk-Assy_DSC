@@ -279,7 +279,7 @@
                         $("#conclusion_lh").parent().css("background-color", "white");
                     }
 
-                    $("#img_rank").css("background-image", "url('http://localhost:8080/1.jpg')");
+                    $("#img_rank").css("background-image", `url(http://localhost:8080/1.jpg?t=${new Date().getTime()})`);
                     $("#img_rank").css("background-size", "cover");
                 }
             });

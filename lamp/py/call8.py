@@ -78,5 +78,8 @@ def read_call_data():
 polling_interval = 1
 
 while True:
-    read_call_data()
-    time.sleep(polling_interval)
+    try:
+        read_call_data()
+        time.sleep(polling_interval)
+    except Exception as e:
+        continue
