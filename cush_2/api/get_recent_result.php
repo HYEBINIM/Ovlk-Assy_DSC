@@ -22,7 +22,7 @@
         $data[$idx]['data4'] = $record['data5'];
 
         $torque = $record['data6'];
-        $pattern = '/(\d+\.\d{2})/';
+        $pattern = '/(\d+\.\d{1})/';
         preg_match_all($pattern, $torque, $matches);
 
         $data[$idx]['data5'] = $matches[0][0];

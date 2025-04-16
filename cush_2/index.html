@@ -24,7 +24,7 @@
             <div class="lh_frame">
                 <span class="frame_title">PRODUCT IMAGE LH</span>
 
-                <img src="/img/assy1_lh.png" id = "img_lh">
+                <img src="/img/cush_lh.jpg" id = "img_lh">
 
                 <div class="data_area">
                     <div class="part">  
@@ -111,7 +111,7 @@
             <div class="rh_frame">
                 <span class="frame_title">PRODUCT IMAGE RH</span>
 
-                <img src="/img/assy1_rh.png" id = "img_rh">
+                <img src="/img/cush_rh.jpg" id = "img_rh">
 
                 <div class="data_area">
                     <div class="part">
@@ -271,7 +271,7 @@
                     var dataAll = JSON.parse(result);
                     var data = dataAll[0];
                     var torqueStr = dataAll[1];
-                    var regex = /(\d+\.\d{2})/g; // 소수점 두 자리까지의 실수를 찾는 정규 표현식
+                    var regex = /(\d+\.\d{1})/g; // 소수점 한 자리까지의 실수를 찾는 정규 표현식
                     var matches = torqueStr.match(regex);
 
                     var torqueArr = Array();
@@ -321,9 +321,11 @@
                         $("#conclusion_rh").text("");
                         $("#conclusion_rh").parent().css("background-color", "white");
 
-                        $("#tq1_lh").text(torqueArr[0]);
-                        $("#tq2_lh").text(torqueArr[1]);
-                        $("#tq3_lh").text(torqueArr[2]);
+                        if(torqueArr && torqueArr.length === 3){
+                            $("#tq1_lh").text(torqueArr[0]);
+                            $("#tq2_lh").text(torqueArr[1]);
+                            $("#tq3_lh").text(torqueArr[2]);
+                        }
 
                         $("#tq1_rh").text("");
                         $("#tq2_rh").text("");
@@ -370,9 +372,11 @@
                         $("#tq2_lh").text("");
                         $("#tq3_lh").text("");
 
-                        $("#tq1_rh").text(torqueArr[0]);
-                        $("#tq2_rh").text(torqueArr[1]);
-                        $("#tq3_rh").text(torqueArr[2]);
+                        if(torqueArr && torqueArr.length === 3){
+                            $("#tq1_rh").text(torqueArr[0]);
+                            $("#tq2_rh").text(torqueArr[1]);
+                            $("#tq3_rh").text(torqueArr[2]);
+                        }
                     }
 
                     $("#img_rank").css("background-image", `url(http://localhost:8080/1.jpg?t=${new Date().getTime()})`);
