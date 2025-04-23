@@ -414,11 +414,14 @@
                             $("#conclusion_rh").parent().css("background-color", "white");
                         }
 
+                        $("#rank_img_lh").css("background-image", `url(http://192.168.200.2:8080/image1/130.jpg?t=${new Date().getTime()})`);
+                        $("#rank_img_lh").css("background-size", "cover");
+
+                        $("#rank_img_rh").css("background-image", `url(http://192.168.200.2:8080/image2/131.jpg?t=${new Date().getTime()})`);
+                        $("#rank_img_rh").css("background-size", "cover");
+
                         if(rankLH[0] != null){
                             $("#rank_per_lh").text(rankLH[0] + "%");
-
-                            $("#rank_img_lh").css("background-image", `url(http://192.168.200.2:8080/image1/130.jpg?t=${new Date().getTime()})`);
-                            $("#rank_img_lh").css("background-size", "cover");
                         }else{
                             $("#rank_per_lh").text("");
                         }
@@ -431,9 +434,6 @@
 
                         if(rankRH[0] != null){
                             $("#rank_per_rh").text(rankRH[0] + "%");
-
-                            $("#rank_img_rh").css("background-image", `url(http://192.168.200.2:8080/image2/131.jpg?t=${new Date().getTime()})`);
-                            $("#rank_img_rh").css("background-size", "cover");
                         }else{
                             $("#rank_per_rh").text("");
                         }
