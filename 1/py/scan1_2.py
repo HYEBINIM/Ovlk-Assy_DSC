@@ -8,8 +8,10 @@ from mysql.connector import Error
 # 지역 시간 모듈
 import time
 
-# 지그 번호를 읽어오고 스캔 검증, 스캔 로트 코드 등을 업데이트할 plc DB
-# 용접 관련 데이터를 읽어올 peak 테이블 위치
+# 파일 시스템 관련 모듈
+import os
+
+# kiosk DB 연결 정보
 main_db_config = {
     "host": "192.168.200.2",
     "port": 3306,
@@ -28,13 +30,25 @@ assy_db_config = {
     "charset": "utf8"
 }
 
-# 새로 들어온 스캔값이 직전 스캔값과 동일한지 비교하는 메소드
-# 동일할 경우 별도 INSERT 없이 스캔 검증과 로트 번호만 UPDATE
+# 에러 로깅 메소드
+def log_message(message, log_file="/AutoSet6/public_html/log/main.log"):
+    log_dir = os.path.dirname(log_file)
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir, exist_ok = True)
+
+    with open(log_file, "a") as f:
+        f.write(message)
+
+# 두 개의 바코드 데이터를 업체 영역(토크) 제외 비교하는 메소드
 def compare_data(pre_data, new_data):
+    if pre_data is None:
+        return False
+
     pre_data_split = pre_data.split(chr(29))
     new_data_split = new_data.split(chr(29))
 
-    # 업체 코드 제거
+    # 업체 영역(토크) 제거
     del pre_data_split[7]
     del new_data_split[7]
 
@@ -48,20 +62,19 @@ def compare_data(pre_data, new_data):
         return False
 
 # 바코드의 prefix로 LH, RH 구분해주는 메소드
-# parameter: code([String] 바코드의 부품 코드 부분에서 prefix 추출하여 전달)
 def get_direction(code):
-    # 구분자는 prefix의 3번째 문자임
+    # 구분자는 prefix의 3번째 문자
     source = int(code[2])
-    
-    # 3: LH / 4: RH
+
+    # 3: RH / 4: LH
     dir = "Undefined"
     if source == 3:
         dir = "LH"
     elif source == 4:
         dir = "RH"
-
-    return dir
     
+    return dir
+
 # 스캐너 연동 메소드
 def scan():
     port = "COM2"
@@ -69,13 +82,27 @@ def scan():
 
     try:
         ser = serial.Serial(port, baud_rate, timeout = 1)
-        print(f"{port} Connected...")
+
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        log_msg = f"[scan1_1][{cur_date} {cur_time}]{port} Connected...\n"
+        log_message(log_msg)
+        print(log_msg)
 
         while True:
             try:
                 if ser.in_waiting > 0:
                     data = ser.readline().decode("utf-8").strip()
-                    print(f"Recieved Data: {data.encode()}")
+
+                    cur = time.localtime()
+                    cur_date = time.strftime("%Y.%m.%d", cur)
+                    cur_time = time.strftime("%H:%M:%S", cur)
+
+                    log_msg = f"[scan1_1][{cur_date} {cur_time}]Recieved Data: {data.encode()}\n"
+                    log_message(log_msg)
+                    print(log_msg)
 
                     # 여러 데이터가 한번에 들어온 경우 반복문 돌리도록 지시 (EOT 기준으로 구분)
                     inputs = data.split(chr(4))
@@ -83,7 +110,7 @@ def scan():
                     for elem in inputs:
                         if elem == '':
                             continue
-                        
+
                         data = elem + chr(4)
 
                         split_data = data.split(chr(29))
@@ -93,7 +120,14 @@ def scan():
                             dir = get_direction(part_code)
                         except Exception as e:
                             # 잘못된 QR코드를 스캔한 경우 다시 스캔하도록 지시
-                            print(f"Invalid data: Re-scan")
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y.%m.%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            error_msg = f"[scan1_1][{cur_date} {cur_time}]Invalide data: Re-scan\n"
+                            log_message(error_msg)
+                            print(error_msg)
+
                             continue
                         
                         if dir == "LH":
@@ -109,8 +143,14 @@ def scan():
                             row_write_id = 6
                             peak_table = "peak_rh"
                         else:
-                            # LH, RH 구분이 되지 않는 경우 다시 스캔하도록 지시
-                            print("Invalid data: Re-scan")
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y.%m.%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            error_msg = f"[scan1_1][{cur_date} {cur_time}]Invalide data: Re-scan\n"
+                            log_message(error_msg)
+                            print(error_msg)
+                            
                             continue
                         
                         try:
@@ -126,17 +166,29 @@ def scan():
                             if assy_db.is_connected():
                                 print("Assy DB Connected...")
                         except Error as e:
-                            print(f"Error during DB Connection: {e}")
-                            return
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y.%m.%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            error_msg = f"[scan1_1][{cur_date} {cur_time}]Error during DB connection: {e}\n"
+                            log_message(error_msg)
+                            print(error_msg)
+                            continue
                         except Exception as e:
-                            print(f"Exception during DB Connection: {e}")
-                            return
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y.%m.%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            error_msg = f"[scan1_1][{cur_date} {cur_time}]Exception during DB connection: {e}\n"
+                            log_message(error_msg)
+                            print(error_msg)
+                            continue
                         
                         # 직전 스캔 데이터 읽어오기
                         query_pre = f"SELECT id, data0 FROM {table} ORDER BY id DESC LIMIT 1"
                         assy_cursor.execute(query_pre)
                         pre_record = assy_cursor.fetchone()
-                        
+
                         query_index = f"SELECT {index_col}, {jig_col} FROM input1 WHERE id = 5"
                         main_cursor.execute(query_index)
                         index_record = main_cursor.fetchone()
@@ -148,7 +200,7 @@ def scan():
                         main_db.commit()
 
                         time.sleep(0.5)
-
+                        
                         query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
                         main_cursor.execute(query_update_2)
                         main_db.commit()
@@ -158,7 +210,11 @@ def scan():
                         cur_time = time.strftime("%H:%M:%S", cur)
 
                         # 새로운 스캔 데이터인 경우 INESRT
-                        # 용접 데이터도 함께 INSERT
+                        if pre_record is None:
+                            pre_record = {
+                                "data0": None
+                            }
+
                         if not compare_data(pre_record['data0'], data):
                             query_peak1 = f"SELECT peak1, peak2, peak3 FROM {peak_table}1 ORDER BY id DESC LIMIT 1"     # 1차 용접 전압, 전류, 유량
                             query_peak2 = f"SELECT peak1, peak2, peak3 FROM {peak_table}2 ORDER BY id DESC LIMIT 1"     # 2차 용접 전압, 전류, 유량
@@ -175,7 +231,10 @@ def scan():
 
                             if record_peak1 is None or record_peak2 is None or record_peak3 is None:
                                 query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
-                                print("용접 데이터가 없습니다.")
+                                
+                                log_msg = f"[scan1_1][{cur_date} {cur_time}]No welding data\n"
+                                log_message(log_msg)
+                                print(log_msg)
                             else:
                                 query_insert = f"""INSERT INTO {table}
                                 (date, time, data0, data9, data10,
@@ -186,7 +245,7 @@ def scan():
                                 '{record_peak1['peak1']}', '{record_peak1['peak2']}', '{record_peak1['peak3']}',
                                 '{record_peak2['peak1']}', '{record_peak2['peak2']}', '{record_peak2['peak3']}',
                                 '{record_peak3['peak1']}', '{record_peak3['peak2']}', '{record_peak3['peak3']}')"""
-
+                            
                             assy_cursor.execute(query_insert)
                             assy_db.commit()
                         else:
@@ -194,7 +253,7 @@ def scan():
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
-
+                        
                         main_cursor.close()
                         main_db.close()
                         print("Main DB Disconnected...")
@@ -203,14 +262,33 @@ def scan():
                         assy_db.close()
                         print("Assy DB Disconnected...")
             except Exception as e:
-                print(f"Error at point 1: {e}")
+                cur = time.localtime()
+                cur_date = time.strftime("%Y.%m.%d", cur)
+                cur_time = time.strftime("%H:%M:%S", cur)
+
+                error_msg = f"[scan1_1][{cur_date} {cur_time}]Exception during recieving data: {e}\n"
+                log_message(error_msg)
+                print(error_msg)
+                continue
     except Exception as e:
-        print(f"Error at point 2: {e}")
-    
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[scan1_1][{cur_date} {cur_time}]Exception during serial connection: {e}\n"
+        log_message(error_msg)
+        print(error_msg)
     finally:
         if "ser" in locals() and ser.is_open:
             ser.close()
-            print(f"{port} Disconnected...")
+
+            cur = time.localtime()
+            cur_date = time.strftime("%Y.%m.%d", cur)
+            cur_time = time.strftime("%H:%M:%S", cur)
+
+            log_msg = f"[scan1_1][{cur_date} {cur_time}]{port} Disconnected...\n"
+            log_message(log_msg)
+            print(log_msg)
 
 if __name__ == "__main__":
     scan()

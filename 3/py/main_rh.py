@@ -8,6 +8,12 @@ import time
 # 사운드 관련 모듈
 import pygame
 
+# 파일 시스템 관련 모듈
+import os
+
+# 에러 발생 traceback 모듈
+import traceback
+
 # 업데이트 실행 상태를 지정할 전역변수
 running = True
 
@@ -26,8 +32,7 @@ assy_db_config = {
     "port": 3306,
     "user": "server",
     "password": "dltmxm1234",
-    "database": "dataset",
-    "charset": "utf8"
+    "database": "dataset"
 }
 
 # Pygame 초기화
@@ -41,29 +46,54 @@ ng_sound_file = "../sound/NG.wav"
 ok_sound = pygame.mixer.Sound(ok_sound_file)
 ng_sound = pygame.mixer.Sound(ng_sound_file)
 
+# 에러 로깅 메소드
+def log_message(message, log_file = "/AutoSet6/public_html/log/main.log"):
+    log_dir = os.path.dirname(log_file)
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir, exist_ok = True)
+    
+    with open(log_file, "a") as f:
+        f.write(message)
+
 # 시작 시점에 running의 값을 정하는 메소드
 def init_running():
     try:
         assy_db = mysql.connector.connect(**assy_db_config)
         assy_cursor = assy_db.cursor(dictionary = True)
     except Error as e:
-        print(f"Error during initialize status")
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[RH][{cur_date} {cur_time}]Error during initialize status: {e}\n"
+        log_message(error_msg)
+        print(error_msg)
     except Exception as e:
-        print(f"Exception during initialize status")
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[RH][{cur_date} {cur_time}]Exception during initialize status: {e}\n"
+        log_message(error_msg)
+        print(error_msg)
     
-    init_query = "SELECT data6 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    init_query = "SELECT data6 FROM assy_rh ORDER BY id DESC LIMIT 1"
     assy_cursor.execute(init_query)
     init_record = assy_cursor.fetchone()
-    init_value = init_record['data6']
+    if init_record:
+        init_value = init_record['data6']
+    else:
+        init_value = "1"
 
     global running
-    if(init_value == '1' or init_value == '2'):
+    if init_value == "1" or init_value == "2":
         running = False
     else:
         running = True
     
-    print(f"Running Status: {running}")
-    
+    print(f"Running: {running}")
+
     return
 
 # kiosk DB 서버에서 plc 데이터 읽어오는 메소드
@@ -81,10 +111,24 @@ def read_plc_data():
         if assy_db.is_connected():
             print("Assy DB Connected...")
     except Error as e:
-        print(f"Error during DB connection: {e}")
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[RH][{cur_date} {cur_time}]Error during DB connection: {e}\n"
+        log_message(error_msg)
+        print(error_msg)
+
         return
     except Exception as e:
-        print(f"Exception during DB connection: {e}")
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[RH][{cur_date} {cur_time}]Exception during DB connection: {e}\n"
+        log_message(error_msg)
+        print(error_msg)
+
         return
     
     # read data (rh) - 1
@@ -134,8 +178,6 @@ def read_plc_data():
                         # PC완료 업데이트 토글
                         global running
                         running = False
-
-                        last_val = value
 
         # column binding (dict) - 2
         cols_2 = {
@@ -196,12 +238,17 @@ def read_plc_data():
                 ng_sound.play()
 
             if not running:
+                cur = time.localtime()
+                cur_date = time.strftime("%Y.%m.%d", cur)
+                cur_time = time.strftime("%H:%M:%S", cur)
+                
                 complete_query = "UPDATE assy3read SET data0 = 1, contents1 = 11 WHERE id = 8"
-
-                print(complete_query)
 
                 main_cursor.execute(complete_query)
                 main_db.commit()
+
+                log_msg = f"[RH][{cur_date} {cur_time}]PC complete signal\n"
+                log_message(log_msg)
     
         main_cursor.close()
         main_db.close()
@@ -224,28 +271,40 @@ def check_new_data():
     cursor.execute(query)
     record = cursor.fetchone()
 
-    null_check = True
-    for key, value in record.items():
-        if value is not None:
-            null_check = False
+    if record:
+        null_check = True
+        for key, value in record.items():
+            if value is not None:
+                null_check = False
     
-    global running
-    running = null_check
+        global running
+        running = null_check
 
     cursor.close()
     db.close()
     print("Assy DB Disconnected... (For checking new INSERT)")
 
+polling_interval = 0.5
+
 init_running()
 
-polling_interval = 1
-
 while True:
-    if running:
-        time.sleep(polling_interval)
-        read_plc_data()
-        print(f"Running: {running}")
-    else:
-        time.sleep(polling_interval)
-        check_new_data()
-        print(f"Running: {running}")
+    try:
+        if running:
+            time.sleep(polling_interval)
+            read_plc_data()
+            print(f"Running: {running}")
+        else:
+            time.sleep(polling_interval)
+            check_new_data()
+            print(f"Running: {running}")
+    except Exception as e:
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        error_msg = f"[RH][{cur_date} {cur_time}]{traceback.format_exc()}"
+        log_message(error_msg)
+        print(error_msg)
+
+        continue
