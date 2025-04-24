@@ -249,11 +249,19 @@ def scan():
                                 query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
                                 main_cursor.execute(query_update)
                                 main_db.commit()
+
+                                log_msg = f"[scan3_1][{cur_date} {cur_time}]Insert new data. Send scan signal and index({index}).\n"
+                                log_message(log_msg)
+                                print(log_msg)
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
+
+                            log_msg = f"[scan3_1][{cur_date} {cur_time}]Duplicate data. Update time column.\n"
+                            log_message(log_msg)
+                            print(log_msg)
                             # 출하 바코드는 토크값이 있음
                             if not ("00.000.0" in torque):
                                 # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
@@ -264,6 +272,10 @@ def scan():
                                 
                                 main_cursor.execute(query_update)
                                 main_db.commit()
+
+                                log_msg = f"[scan3_1][{cur_date} {cur_time}]Send scan signal and index({index}).\n"
+                                log_message(log_msg)
+                                print(log_msg)
 
                         main_cursor.close()
                         main_db.close()

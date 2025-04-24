@@ -199,6 +199,14 @@ def scan():
                         main_cursor.execute(query_update_1)
                         main_db.commit()
 
+                        cur = time.localtime()
+                        cur_date = time.strftime("%Y-%m-%d", cur)
+                        cur_time = time.strftime("%H:%M:%S", cur)
+
+                        log_msg = f"[scan1_2][{cur_date} {cur_time}]Send scan signal.\n"
+                        log_message(log_msg)
+                        print(log_msg)
+
                         time.sleep(0.5)
                         
                         query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
@@ -208,6 +216,10 @@ def scan():
                         cur = time.localtime()
                         cur_date = time.strftime("%Y-%m-%d", cur)
                         cur_time = time.strftime("%H:%M:%S", cur)
+
+                        log_msg = f"[scan1_2][{cur_date} {cur_time}]Send index({index}).\n"
+                        log_message(log_msg)
+                        print(log_msg)
 
                         # 새로운 스캔 데이터인 경우 INESRT
                         if pre_record is None:
@@ -232,7 +244,10 @@ def scan():
                             if record_peak1 is None or record_peak2 is None or record_peak3 is None:
                                 query_insert = f"INSERT INTO {table} (date, time, data0, data9, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                                 
-                                log_msg = f"[scan1_1][{cur_date} {cur_time}]No welding data\n"
+                                assy_cursor.execute(query_insert)
+                                assy_db.commit()
+
+                                log_msg = f"[scan1_1][{cur_date} {cur_time}]Insert new data. No welding data\n"
                                 log_message(log_msg)
                                 print(log_msg)
                             else:
@@ -245,14 +260,24 @@ def scan():
                                 '{record_peak1['peak1']}', '{record_peak1['peak2']}', '{record_peak1['peak3']}',
                                 '{record_peak2['peak1']}', '{record_peak2['peak2']}', '{record_peak2['peak3']}',
                                 '{record_peak3['peak1']}', '{record_peak3['peak2']}', '{record_peak3['peak3']}')"""
+
+                                assy_cursor.execute(query_insert)
+                                assy_db.commit()
+
+                                log_msg = f"[scan1_1][{cur_date} {cur_time}]Insert new data.\n"
+                                log_message(log_msg)
+                                print(log_msg)
                             
-                            assy_cursor.execute(query_insert)
-                            assy_db.commit()
+                            
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
+
+                            log_msg = f"[scan1_1][{cur_date} {cur_time}]Duplicate data. Update time column.\n"
+                                log_message(log_msg)
+                                print(log_msg)
                         
                         main_cursor.close()
                         main_db.close()

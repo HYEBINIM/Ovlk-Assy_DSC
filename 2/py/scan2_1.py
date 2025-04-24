@@ -233,6 +233,10 @@ def scan():
                         cur_date = time.strftime("%Y-%m-%d", cur)
                         cur_time = time.strftime("%H:%M:%S", cur)
 
+                        log_msg = f"[scan2_1][{cur_date} {cur_time}]Send scan signal and index({index}).\n"
+                        log_message(log_msg)
+                        print(log_msg)
+
                         # 새로운 스캔 데이터인 경우 INSERT
                         if pre_record is None:
                             pre_record = {
@@ -243,11 +247,19 @@ def scan():
                             query_insert = f"INSERT INTO {table} (date, time, data0, data6, data7) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
                             assy_cursor.execute(query_insert)
                             assy_db.commit()
+
+                            log_msg = f"[scan2_1][{cur_date} {cur_time}]Insert new data.\n"
+                            log_message(log_msg)
+                            print(log_msg)
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
                             assy_cursor.execute(query_duplication)
                             assy_db.commit()
+
+                            log_msg = f"[scan2_1][{cur_date} {cur_time}]Duplicate data. Update time column.\n"
+                            log_message(log_msg)
+                            print(log_msg)
 
                         main_cursor.close()
                         main_db.close()
