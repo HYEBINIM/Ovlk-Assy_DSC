@@ -268,7 +268,6 @@ def scan():
                                 log_message(log_msg)
                                 print(log_msg)
                             
-                            
                         else:
                             # 기존 데이터와 중복인 경우 시간만 업데이트
                             query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
@@ -276,8 +275,8 @@ def scan():
                             assy_db.commit()
 
                             log_msg = f"[scan1_1][{cur_date} {cur_time}]Duplicate data. Update time column.\n"
-                                log_message(log_msg)
-                                print(log_msg)
+                            log_message(log_msg)
+                            print(log_msg)
                         
                         main_cursor.close()
                         main_db.close()

@@ -232,7 +232,7 @@ def check_new_data():
     db.close()
     print("Assy DB Disconnected... (For checking new INSERT)")
 
-    polling_interval = 0.5
+polling_interval = 0.5
 
 init_running()
 

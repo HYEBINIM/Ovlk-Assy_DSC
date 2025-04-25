@@ -113,7 +113,14 @@ def scan():
 
     try:
         ser = serial.Serial(port, baud_rate, timeout = 1)
-        print(f"{port} Connected...")
+        
+        cur = time.localtime()
+        cur_date = time.strftime("%Y.%m.%d", cur)
+        cur_time = time.strftime("%H:%M:%S", cur)
+
+        log_msg = f"[scan3_1][{cur_date} {cur_time}]{port} Connected...\n"
+        log_message(log_msg)
+        print(log_msg)
 
         while True:
             try:
@@ -269,13 +276,16 @@ def scan():
                                     query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
                                 else:
                                     query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-                                
-                                main_cursor.execute(query_update)
-                                main_db.commit()
+                            else:
+                                # 중복이지만 출하 바코드가 아닌 경우 스캔 검증과 인덱스 날리기
+                                query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
 
-                                log_msg = f"[scan3_1][{cur_date} {cur_time}]Send scan signal and index({index}).\n"
-                                log_message(log_msg)
-                                print(log_msg)
+                            main_cursor.execute(query_update)
+                            main_db.commit()
+
+                            log_msg = f"[scan3_1][{cur_date} {cur_time}]Send scan signal and index({index}).\n"
+                            log_message(log_msg)
+                            print(log_msg)
 
                         main_cursor.close()
                         main_db.close()
