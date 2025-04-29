@@ -11,6 +11,9 @@ import time
 # 파일 시스템 관련 모듈
 import os
 
+# 랜덤값 생성 모듈
+import random
+
 # 스캔 검증, 스캔 로트 코드 등을 업데이트할 plc DB
 main_db_config = {
     "host": "192.168.200.2",
@@ -49,48 +52,15 @@ def log_message(message, log_file="/AutoSet6/public_html/log/main.log"):
     with open(log_file, "a") as f:
         f.write(message)
 
-# 스캔 데이터에서 업체 영역 부분 기준으로 앞, 뒤로 나누어 주는 메소드
-def devide_code(data):
-    split_data = data.split(chr(29))
-
-    prefix = chr(29).join(split_data[0:6])
-    suffix = chr(29).join(split_data[8:])
-
-    fix = {
-        "prefix": prefix,
-        "suffix": suffix
-    }
-
-    return fix
-
-# 두 개의 바코드 데이터를 업체 영역(토크) 제외 비교하는 메소드
+# 두 개의 바코드 데이터를 비교하는 메소드
 def compare_data(pre_data, new_data):
     if pre_data is None:
         return False
-
-    pre_data_split = pre_data.split(chr(29))
-    new_data_split = new_data.split(chr(29))
-
-    # 업체 영역(토크) 제거
-    del pre_data_split[7]
-    del new_data_split[7]
-
-    # 재조합
-    pre_data = chr(29).join(pre_data_split)
-    new_data = chr(29).join(new_data_split)
-
+    
     if pre_data == new_data:
         return True
     else:
         return False
-
-# 스캔값에서 업체 영역(토크)만 추출하는 메소드
-def get_torque(data):
-    data_split = data.split(chr(29))
-
-    torque = data_split[7]
-
-    return torque
 
 # 바코드의 prefix로 LH, RH 구분해주는 메소드
 def get_direction(code):
@@ -105,6 +75,24 @@ def get_direction(code):
         dir = "RH"
     
     return dir
+
+# 스캔값에서 업체 영역(토크)만 추출하는 메소드
+def get_torque(data):
+    data_split = data.split(chr(29))
+
+    torque = data_split[7]
+
+    return torque
+
+# 스캔값의 업체 영역(토크)을 변경하는 메소드
+def set_torque(data, torque):
+    data_split = data.split(chr(29))
+
+    data_split[7] = torque
+
+    data = chr(29).join(data_split)
+
+    return data
 
 # 스캐너 연동 메소드
 def scan():
@@ -222,68 +210,109 @@ def scan():
                         assy_cursor.execute(query_pre)
                         pre_record = assy_cursor.fetchone()
 
-                        # 스캔 데이터에서 업체 영역 기준으로 prefix와 suffix 구분
-                        fix = devide_code(data)
+                        # 직전 스캔 데이터 읽어오기
+                        query_pre = f"SELECT id, data0, data9, data10 FROM {table} ORDER BY id DESC LIMIT 1"
+                        assy_cursor.execute(query_pre)
+                        pre_record = assy_cursor.fetchone()
 
-                        # 조립 1차 DB에서 업체 영역 제외 모든 부분이 같은 데이터의 인덱스 및 지그값 추출
-                        query_jig = f"SELECT data9, data10 FROM {table} WHERE data0 LIKE '{fix['prefix']}%' AND data0 LIKE '%{fix['suffix']}' ORDER BY date DESC, time DESC LIMIT 1"
-                        jig_cursor.execute(query_jig)
-                        jig_record = jig_cursor.fetchone()
-                        print(jig_record)
-                        jig = jig_record['data9']
-                        index = jig_record['data10']
-
-                        cur = time.localtime()
-                        cur_date = time.strftime("%Y-%m-%d", cur)
-                        cur_time = time.strftime("%H:%M:%S", cur)
-
-                        # 3차에서는 중복 스캔값이 들어와도 업체영역에 따라 PLC 신호 전송 여부가 달라짐
-                        torque = get_torque(data)
-
-                        # 새로운 스캔 데이터인 경우 INSERT
+                        # 직전 스캔 데이터가 없는 경우
                         if pre_record is None:
                             pre_record = {
                                 "data0": None
                             }
 
-                        if not compare_data(pre_record['data0'], data):
-                            # 신규 데이터는 토크값이 없음
-                            if "00.000.0" in torque:
-                                query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}')"
-                                assy_cursor.execute(query_insert)
+                        if compare_data(pre_record['data0'], data):
+                            # 이전 데이터와 중복인 경우
+
+                            # 해당 레코드에서 인덱스 추출
+                            index = pre_record['data10']
+
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            if pre_record['data9'] is None:
+                                # 단순 중복 스캔인 경우
+                                query_duple = f"UPDATE {table} set time = '{cur_time}' WHERE id = {pre_record['id']}"
+                                assy_cursor.execute(query_duple)
                                 assy_db.commit()
 
                                 query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-                                main_cursor.execute(query_update)
-                                main_db.commit()
-
-                                log_msg = f"[scan3_1][{cur_date} {cur_time}]Insert new data. Send scan signal and index({index}).\n"
-                                log_message(log_msg)
-                                print(log_msg)
-                        else:
-                            # 기존 데이터와 중복인 경우 시간만 업데이트
-                            query_duplication = f"UPDATE {table} SET time = '{cur_time}' WHERE id = {pre_record['id']}"
-                            assy_cursor.execute(query_duplication)
-                            assy_db.commit()
-
-                            log_msg = f"[scan3_1][{cur_date} {cur_time}]Duplicate data. Update time column.\n"
-                            log_message(log_msg)
-                            print(log_msg)
-                            # 출하 바코드는 토크값이 있음
-                            if not ("00.000.0" in torque):
-                                # 등급값이 B 미만인 경우 스캔 검증에 2 날리기
-                                if pre_record['data9'] == "C" or pre_record['data9'] == "D":
-                                    query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"    
-                                else:
-                                    query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
                             else:
-                                # 중복이지만 출하 바코드가 아닌 경우 스캔 검증과 인덱스 날리기
-                                query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
-
+                                # 출하 바코드인 경우 (등급값이 있는 경우)
+                                if pre_record['data9'] == "A" or pre_record['data9'] == "B":
+                                    query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                                else:
+                                    query_update = f"UPDATE assy3read SET data0 = 2, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                            
                             main_cursor.execute(query_update)
                             main_db.commit()
 
                             log_msg = f"[scan3_1][{cur_date} {cur_time}]Send scan signal and index({index}).\n"
+                            log_message(log_msg)
+                            print(log_msg)
+                        else:
+                            # 이전 데이터와 중복이 아닌 경우 (즉, 관리 바코드인 경우)
+
+                            # 조립 1차 DB에서 같은 바코드의 데이터 추출
+                            query_jig = f"SELECT data7, data8, data9, data10 FROM {table} WHERE data0 = '{data}' ORDER BY id DESC LIMIT 1"
+                            jig_cursor.execute(query_jig)
+                            jig_record = jig_cursor.fetchone()
+
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            if jig_record is None:
+                                # 1차에 해당 바코드가 없는 경우 (1차 공정을 건너뛴 경우)
+                                log_msg = f"[scan3_1][{cur_date} {cur_time}]No assy1 data. Insert random data.\n"
+                                log_message(log_msg)
+                                print(log_msg)
+                                
+                                # 제품에 해당하는 인덱스 추출
+                                query_index = f"SELECT id FROM index_code WHERE {index_col} = '{part_code}' LIMIT 1"
+                                main_cursor.execute(query_index)
+                                index_record = main_cursor.fetchone()
+
+                                # 토크값 추출 (실제 검사값이 아니며, 임의로 부여한 양품값)
+                                torque = get_torque(data)
+                                torque_1 = int(float(torque[:4]) * 100)
+                                torque_2 = int(float(torque[4:]) * 100)
+
+                                # 랜덤 지그 번호 부여 (지그와 인덱스가 맞지 않을 수 있음)
+                                jig = random.randint(1, 4)
+                                index = index_record['id']
+                            else:
+                                # 1차에 해당 바코드가 있는 경우 (정상적으로 공정을 진행한 경우)
+                                torque_1 = int(jig_record['data7'])
+                                torque_2 = int(jig_record['data8'])
+                                jig = jig_record['data9']
+                                index = jig_record['data10']
+
+                                # 바코드에 사용할 업체 영역 생성
+                                torque_1 = torque_1 // 10
+                                torque_2 = torque_2 // 10
+
+                                float_torque_1 = torque_1 / 10
+                                float_torque_2 = torque_2 / 10
+
+                                str_torque_1 = f"{float_torque_1:04.1f}"
+                                str_torque_2 = f"{float_torque_2:04.1f}"
+
+                                torque  = str_torque_1 + str_torque_2
+
+                                # 바코드의 업체 영역을 실제 검사값으로 변경
+                                data = set_torque(data, torque)
+
+                            query_insert = f"INSERT INTO {table} (date, time, data0, data7, data10, data17, data18) VALUES ('{cur_date}', '{cur_time}', '{data}', '{jig}', '{index}', '{torque_1}', '{torque_2}')"
+                            assy_cursor.execute(query_insert)
+                            assy_db.commit()
+
+                            query_update = f"UPDATE assy3read SET data0 = 1, data1 = {index}, contents1 = 2 WHERE id = {row_write_id}"
+                            main_cursor.execute(query_update)
+                            main_db.commit()
+
+                            log_msg = f"[scan3_1][{cur_date} {cur_time}]Insert new data. Send scan signal and index({index}).\n"
                             log_message(log_msg)
                             print(log_msg)
 
