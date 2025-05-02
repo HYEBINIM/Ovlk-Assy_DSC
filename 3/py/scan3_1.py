@@ -80,7 +80,7 @@ def get_direction(code):
 def get_torque(data):
     data_split = data.split(chr(29))
 
-    torque = data_split[7]
+    torque = data_split[7][1:]
 
     return torque
 
@@ -290,11 +290,11 @@ def scan():
                                 index = jig_record['data10']
 
                                 # 바코드에 사용할 업체 영역 생성
-                                torque_1 = torque_1 // 10
-                                torque_2 = torque_2 // 10
+                                mod_torque_1 = torque_1 // 10
+                                mod_torque_2 = torque_2 // 10
 
-                                float_torque_1 = torque_1 / 10
-                                float_torque_2 = torque_2 / 10
+                                float_torque_1 = mod_torque_1 / 10
+                                float_torque_2 = mod_torque_2 / 10
 
                                 str_torque_1 = f"{float_torque_1:04.1f}"
                                 str_torque_2 = f"{float_torque_2:04.1f}"
