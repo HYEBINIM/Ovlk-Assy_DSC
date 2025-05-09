@@ -88,7 +88,7 @@ def get_torque(data):
 def set_torque(data, torque):
     data_split = data.split(chr(29))
 
-    data_split[7] = torque
+    data_split[7] = "C" + torque
 
     data = chr(29).join(data_split)
 
@@ -152,9 +152,11 @@ def scan():
                         if dir == "LH":
                             table = "assy_lh"
                             row_write_id = 2
+                            index_col = "lh_code"
                         elif dir == "RH":
                             table = "assy_rh"
                             row_write_id = 6
+                            index_col = "rh_code"
                         else:
                             cur = time.localtime()
                             cur_date = time.strftime("%Y.%m.%d", cur)
