@@ -52,7 +52,7 @@ def read_input_data():
     if record['data1'] == "1":
         ok_sound.play()
 
-        time.sleep(0.1)
+        time.sleep(0.3)
 
         update_query = "UPDATE input1 SET data1 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -60,7 +60,7 @@ def read_input_data():
     elif record['data1'] == "2":
         ng_sound.play()
 
-        time.sleep(0.1)
+        time.sleep(0.3)
 
         update_query = "UPDATE input1 SET data1 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -69,7 +69,7 @@ def read_input_data():
     if record['data3'] == "1":
         ok_sound.play()
 
-        time.sleep(0.1)
+        time.sleep(0.3)
 
         update_query = "UPDATE input1 SET data3 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -77,7 +77,7 @@ def read_input_data():
     elif record['data3'] == "2":
         ng_sound.play()
 
-        time.sleep(0.1)
+        time.sleep(0.3)
 
         update_query = "UPDATE input1 SET data3 = 0 WHERE id = 2"
         cursor.execute(update_query)
@@ -87,8 +87,8 @@ def read_input_data():
     db.close()
     print("DB Disconnected...")
 
-polling_interval = 0.5
+polling_interval = 0.1
 
 while True:
     read_input_data()
-    time.sleep(1)
+    time.sleep(polling_interval)
