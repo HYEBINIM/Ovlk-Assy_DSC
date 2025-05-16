@@ -75,6 +75,14 @@ def get_direction(code):
     
     return dir
 
+# 스캔값의 날짜를 추출하는 메소드
+def get_scan_date(data):
+    data_split = data.split(chr(29))
+
+    scan_date = data_split[5]
+
+    return scan_date[1:3]
+
 # 스캐너 연동 메소드
 def scan():
     port = "COM2"
@@ -195,31 +203,32 @@ def scan():
                         index = index_record[index_col]
                         jig = index_record[jig_col]
                         
-                        query_update_1 = f"UPDATE assy1read SET data1 = 1, contents1 = 12 WHERE id = {row_write_id}"
-                        main_cursor.execute(query_update_1)
-                        main_db.commit()
+                        if get_scan_date(data) != "00":
+                            query_update_1 = f"UPDATE assy1read SET data1 = 1, contents1 = 12 WHERE id = {row_write_id}"
+                            main_cursor.execute(query_update_1)
+                            main_db.commit()
 
-                        cur = time.localtime()
-                        cur_date = time.strftime("%Y-%m-%d", cur)
-                        cur_time = time.strftime("%H:%M:%S", cur)
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
 
-                        log_msg = f"[scan1_2][{cur_date} {cur_time}]Send scan signal.\n"
-                        log_message(log_msg)
-                        print(log_msg)
+                            log_msg = f"[scan1_2][{cur_date} {cur_time}]Send scan signal.\n"
+                            log_message(log_msg)
+                            print(log_msg)
 
-                        time.sleep(0.5)
-                        
-                        query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
-                        main_cursor.execute(query_update_2)
-                        main_db.commit()
+                            time.sleep(0.5)
+                            
+                            query_update_2 = f"UPDATE assy1read SET data2 = {index}, contents1 = 13 WHERE id = {row_write_id}"
+                            main_cursor.execute(query_update_2)
+                            main_db.commit()
 
-                        cur = time.localtime()
-                        cur_date = time.strftime("%Y-%m-%d", cur)
-                        cur_time = time.strftime("%H:%M:%S", cur)
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
 
-                        log_msg = f"[scan1_2][{cur_date} {cur_time}]Send index({index}).\n"
-                        log_message(log_msg)
-                        print(log_msg)
+                            log_msg = f"[scan1_2][{cur_date} {cur_time}]Send index({index}).\n"
+                            log_message(log_msg)
+                            print(log_msg)
 
                         # 새로운 스캔 데이터인 경우 INESRT
                         if pre_record is None:
@@ -227,7 +236,21 @@ def scan():
                                 "data0": None
                             }
 
-                        if not compare_data(pre_record['data0'], data):
+                        if get_scan_date(data) == "00":
+                            # 초기화 데이터의 경우
+
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y-%m-%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            query_init = f"INSERT INTO {table} (date, time, data0) VALUES ('{cur_date}', '{cur_time}', '{data}')"
+                            assy_cursor.execute(query_init)
+                            assy_db.commit()
+
+                            log_msg = f"[scan1_2][{cur_date} {cur_time}]Initialize monitor.\n"
+                            log_message(log_msg)
+                            print(log_msg)
+                        elif not compare_data(pre_record['data0'], data):
                             query_peak1 = f"SELECT peak1, peak2, peak3 FROM {peak_table}1 ORDER BY id DESC LIMIT 1"     # 1차 용접 전압, 전류, 유량
                             query_peak2 = f"SELECT peak1, peak2, peak3 FROM {peak_table}2 ORDER BY id DESC LIMIT 1"     # 2차 용접 전압, 전류, 유량
                             query_peak3 = f"SELECT peak1, peak2, peak3 FROM {peak_table}3 ORDER BY id DESC LIMIT 1"     # 3차 용접 전압, 전류, 유량

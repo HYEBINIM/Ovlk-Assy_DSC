@@ -56,7 +56,18 @@ def log_message(message, log_file="/AutoSet6/public_html/log/main.log"):
 def compare_data(pre_data, new_data):
     if pre_data is None:
         return False
-    
+
+    pre_data_split = pre_data.split(chr(29))
+    new_data_split = new_data.split(chr(29))
+
+    # 업체 영역(토크) 제거
+    del pre_data_split[7]
+    del new_data_split[7]
+
+    # 재조합
+    pre_data = chr(29).join(pre_data_split)
+    new_data = chr(29).join(new_data_split)
+
     if pre_data == new_data:
         return True
     else:
@@ -93,6 +104,14 @@ def set_torque(data, torque):
     data = chr(29).join(data_split)
 
     return data
+
+# 스캔값의 날짜를 추출하는 메소드
+def get_scan_date(data):
+    data_split = data.split(chr(29))
+
+    scan_date = data_split[5]
+
+    return scan_date[1:3]
 
 # 스캐너 연동 메소드
 def scan():
@@ -217,7 +236,21 @@ def scan():
                                 "data0": None
                             }
                         
-                        if compare_data(pre_record['data0'], data):
+                        if get_scan_date(data) == "00":
+                            # 초기화 데이터의 경우
+
+                            cur = time.localtime()
+                            cur_date = time.strftime("%Y.%m.%d", cur)
+                            cur_time = time.strftime("%H:%M:%S", cur)
+
+                            query_init = f"INSERT INTO {table} (date, time, data0) VALUES ('{cur_date}', '{cur_time}', '{data}')"
+                            assy_cursor.execute(query_init)
+                            assy_db.commit()
+
+                            log_msg = f"[scan2_1][{cur_date} {cur_time}]Initialize monitor.\n"
+                            log_message(log_msg)
+                            print(log_msg)
+                        elif compare_data(pre_record['data0'], data):
                             # 이전 데이터와 중복인 경우
 
                             # 해당 레코드에서 인덱스 추출

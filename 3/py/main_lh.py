@@ -208,11 +208,11 @@ def read_plc_data():
                 set_clause.append(f"data14 = {vector}")
             elif last_col == "data12":
                 # 전방 합불 타이밍
-                vector_query = "SELECT data4 FROM input2 WHERE id = 1"
+                vector_query = "SELECT data2 FROM input2 WHERE id = 1"
                 main_cursor.execute(vector_query)
                 vector_record = main_cursor.fetchone()
 
-                vector = vector_record['data4']
+                vector = vector_record['data2']
 
                 set_clause.append(f"data15 = {vector}")
             elif last_col == "data13":

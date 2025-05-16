@@ -199,29 +199,29 @@ def read_plc_data():
         if len(set_clause) > 0:
             if last_col == "data11":
                 # 후방 합불 타이밍
-                vector_query = "SELECT data2 FROM input2 WHERE id = 1"
+                vector_query = "SELECT data1 FROM input2 WHERE id = 1"
                 main_cursor.execute(vector_query)
                 vector_record = main_cursor.fetchone()
 
-                vector = vector_record['data2']
+                vector = vector_record['data1']
 
                 set_clause.append(f"data14 = {vector}")
             elif last_col == "data12":
                 # 전방 합불 타이밍
-                vector_query = "SELECT data6 FROM input2 WHERE id = 1"
+                vector_query = "SELECT data3 FROM input2 WHERE id = 1"
                 main_cursor.execute(vector_query)
                 vector_record = main_cursor.fetchone()
 
-                vector = vector_record['data6']
+                vector = vector_record['data3']
 
                 set_clause.append(f"data15 = {vector}")
             elif last_col == "data13":
                 # 원점 합불 타이밍
-                vector_query = "SELECT data2 FROM input2 WHERE id = 1"
+                vector_query = "SELECT data1 FROM input2 WHERE id = 1"
                 main_cursor.execute(vector_query)
                 vector_record = main_cursor.fetchone()
 
-                vector = vector_record['data2']
+                vector = vector_record['data1']
 
                 set_clause.append(f"data16 = {vector}")
                 

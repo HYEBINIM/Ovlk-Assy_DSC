@@ -89,6 +89,16 @@
             $rank_rh = array();
             array_push($rank_rh, $record_rh['DATA8']);
             array_push($rank_rh, $record_rh['DATA9']);
+
+            $tilt_lh = array();
+            array_push($tilt_lh, $record_lh['DATA14']);
+            array_push($tilt_lh, $record_lh['DATA15']);
+            array_push($tilt_lh, $record_lh['DATA16']);
+
+            $tilt_rh = array();
+            array_push($tilt_rh, $record_rh['DATA14']);
+            array_push($tilt_rh, $record_rh['DATA15']);
+            array_push($tilt_rh, $record_rh['DATA16']);
     }
 
     $data = array();
@@ -98,6 +108,8 @@
     if($process == 3){
         array_push($data, $rank_lh);
         array_push($data, $rank_rh);
+        array_push($data, $tilt_lh);
+        array_push($data, $tilt_rh);
     }
 
     $result_lh -> close();

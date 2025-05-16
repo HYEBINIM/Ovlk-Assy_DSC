@@ -48,7 +48,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>전방 단차</span>
+                                    <span>마운팅 1</span>
                                 </div>
 
                                 <div class = "value">
@@ -58,7 +58,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>후방 단차</span>
+                                    <span>마운팅 2</span>
                                 </div>
 
                                 <div class = "value">
@@ -176,7 +176,7 @@
     
                             <div class = "row">
                                 <div class = "label">
-                                    <span>전방 단차</span>
+                                    <span>마운팅 1</span>
                                 </div>
     
                                 <div class = "value">
@@ -186,7 +186,7 @@
     
                             <div class = "row">
                                 <div class = "label">
-                                    <span>후방 단차</span>
+                                    <span>마운팅 2</span>
                                 </div>
     
                                 <div class = "value">
@@ -333,6 +333,9 @@
                         var rankLH = data[2];
                         var rankRH = data[3];
 
+                        var tiltLH = data[4];
+                        var tiltRH = data[5];
+
                         part_code_all_lh = dataLH[0];
                         part_code_all_rh = dataRH[0];
                         
@@ -366,10 +369,21 @@
                             let idLH = "data" + i + "_lh";
 
                             if(dataLH[i] == 1){
-                                $("#" + idLH).text("OK");
+                                if(i >= 6 && i <= 8){
+                                    tilt = parseInt(tiltLH[i - 6]);
+                                    $("#" + idLH).text(tilt / 10);
+                                }else{
+                                    $("#" + idLH).text("OK");
+                                }
+
                                 $("#" + idLH).parent().css("background-color", "green");
                             }else if(dataLH[i] == 2){
-                                $("#" + idLH).text("NG");
+                                if(i >= 6 && i <= 8){
+                                    tilt = parseInt(tiltLH[i - 6]);
+                                    $("#" + idLH).text(tilt / 10);
+                                }else{
+                                    $("#" + idLH).text("NG");
+                                }
                                 $("#" + idLH).parent().css("background-color", "red");
                             }else{
                                 $("#" + idLH).text("");
@@ -381,10 +395,22 @@
                             let idRH = "data" + i + "_rh";
 
                             if(dataRH[i] == 1){
-                                $("#" + idRH).text("OK");
+                                if(i >= 6 && i <= 8){
+                                    tilt = parseInt(tiltRH[i - 6]);
+                                    $("#" + idRH).text(tilt / 10);
+                                }else{
+                                    $("#" + idRH).text("OK");
+                                }
+
                                 $("#" + idRH).parent().css("background-color", "green");
                             }else if(dataRH[i] == 2){
-                                $("#" + idRH).text("NG");
+                                if(i >= 6 && i <= 8){
+                                    tilt = parseInt(tiltRH[i - 6]);
+                                    $("#" + idRH).text(tilt / 10);
+                                }else{
+                                    $("#" + idRH).text("NG");
+                                }
+
                                 $("#" + idRH).parent().css("background-color", "red");
                             }else{
                                 $("#" + idRH).text("");
@@ -465,7 +491,7 @@
             }
 
             setInterval(updateClock, 1000);
-            setInterval(updateData, 1000);
+            setInterval(updateData, 200);
             setInterval(updateCount, 1000);
         </script>
     </body>

@@ -152,8 +152,6 @@ def read_plc_data():
         # column binding (dict)
         cols = {
             "data2": "data1",
-            "data3": "data2",
-            "data4": "data3",
             "data5": "data4",
             "data6": "data5"
         }
