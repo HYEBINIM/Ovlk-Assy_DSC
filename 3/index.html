@@ -119,8 +119,8 @@
                     </div>
 
                     <div class = "rank_area">
-                        <div class = "rank_img" id = "rank_img_lh">
-
+                        <div class = "rank_img">
+                            <img src = "http://192.168.200.2:8080/image1/130.jpg" id = "rank_img_lh">
                         </div>
 
                         <div class = "rank_data">
@@ -247,8 +247,8 @@
                     </div>
 
                     <div class = "rank_area">
-                        <div class = "rank_img" id = "rank_img_rh">
-
+                        <div class = "rank_img">
+                            <img src = "http://192.168.200.2:8080/image2/131.jpg" id = "rank_img_rh">
                         </div>
 
                         <div class = "rank_data">
@@ -440,12 +440,6 @@
                             $("#conclusion_rh").parent().css("background-color", "white");
                         }
 
-                        $("#rank_img_lh").css("background-image", `url(http://192.168.200.2:8080/image1/130.jpg?t=${new Date().getTime()})`);
-                        $("#rank_img_lh").css("background-size", "cover");
-
-                        $("#rank_img_rh").css("background-image", `url(http://192.168.200.2:8080/image2/131.jpg?t=${new Date().getTime()})`);
-                        $("#rank_img_rh").css("background-size", "cover");
-
                         if(rankLH[0] != null){
                             $("#rank_per_lh").text(rankLH[0] + "%");
                         }else{
@@ -490,9 +484,15 @@
                 });
             }
 
+            function updateImage(){
+                document.getElementById("rank_img_lh").src = `http://192.168.200.2:8080/image1/130.jpg?t=${Date.now()}`;
+                document.getElementById("rank_img_rh").src = `http://192.168.200.2:8080/image2/131.jpg?t=${Date.now()}`;
+            }
+
             setInterval(updateClock, 1000);
             setInterval(updateData, 200);
             setInterval(updateCount, 1000);
+            setInterval(updateImage, 1000);
         </script>
     </body>
 </html>
