@@ -139,6 +139,26 @@
                 <span class = "frame_title">RANK IMAGE</span>
 
                 <div id = "img_rank"></div>
+
+                <div class = "rank_row">
+                    <div class = "label">
+                        <span>등급</span>
+                    </div>
+
+                    <div class = "value">
+                        <span id = "rank"></span>
+                    </div>
+                </div>
+
+                <div class = "rank_row">
+                    <div class = "label">
+                        <span>판독률</span>
+                    </div>
+
+                    <div class = "value">
+                        <span id = "rank_per"></span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -205,9 +225,11 @@
                 url: "/api/get_data.php",
                 type: "POST",
                 success: function (result) {
-                    var data = JSON.parse(result);
-
+                    var dataAll = JSON.parse(result);
+                    var data = dataAll[0];
                     var dir = data[0];
+                    var rank = dataAll[1];
+                    var rankPer = dataAll[2];
 
                     if(dir == 1){
                         for(i = 1; i < data.length - 1; i++){
@@ -281,6 +303,12 @@
 
                     $("#img_rank").css("background-image", `url(http://localhost:8080/1.jpg?t=${new Date().getTime()})`);
                     $("#img_rank").css("background-size", "cover");
+                    $("#rank").text(rank);
+                    if(rankPer != ""){
+                        $("#rank_per").text(rankPer + "%");
+                    }else{
+                        $("#rank_per").text("");
+                    }
                 }
             });
         }

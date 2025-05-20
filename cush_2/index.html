@@ -189,6 +189,26 @@
                 <span class = "frame_title">RANK IMAGE</span>
 
                 <div id = "img_rank"></div>
+
+                <div class = "rank_row">
+                    <div class = "label">
+                        <span>등급</span>
+                    </div>
+
+                    <div class = "value">
+                        <span id = "rank"></span>
+                    </div>
+                </div>
+
+                <div class = "rank_row">
+                    <div class = "label">
+                        <span>판독률</span>
+                    </div>
+
+                    <div class = "value">
+                        <span id = "rank_per"></span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -273,6 +293,8 @@
                     var torqueStr = dataAll[1];
                     var regex = /(\d+\.\d{1})/g; // 소수점 한 자리까지의 실수를 찾는 정규 표현식
                     var matches = torqueStr.match(regex);
+                    var rank = dataAll[2];
+                    var rankPer = dataAll[3];
 
                     var torqueArr = Array();
                     if (matches && matches.length === 3) {
@@ -381,6 +403,12 @@
 
                     $("#img_rank").css("background-image", `url(http://localhost:8080/1.jpg?t=${new Date().getTime()})`);
                     $("#img_rank").css("background-size", "cover");
+                    $("#rank").text(rank);
+                    if(rankPer != ""){
+                        $("#rank_per").text(rankPer + "%");
+                    }else{
+                        $("#rank_per").text("");
+                    }
                 }
             });
         }

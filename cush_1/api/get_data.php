@@ -35,6 +35,11 @@
     array_push($data, $record['data5']);    // 조립 합불
     array_push($data, $record['data7']);    // 전체 합불
 
+    $return_data = array();
+    array_push($return_data, $data);
+    array_push($return_data, isset($record['data8']) ? $record['data8'] : "");
+    array_push($return_data, isset($record['data10']) ? $record['data10'] : "");
+
     $result -> close();
     $conn -> close();
 

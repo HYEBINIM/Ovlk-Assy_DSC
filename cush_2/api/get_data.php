@@ -43,7 +43,9 @@
     $return_data = array();
 
     array_push($return_data, $data);
-    array_push($return_data, $record['data6']); // 토크값
+    array_push($return_data, $record['data6']);    // 토크값
+    array_push($return_data, isset($record['data8']) ? $record['data8'] : "");    // 등급값
+    array_push($return_data, isset($record['data10']) ? $record['data10'] : "");   // 판독률
 
     echo json_encode($return_data);
 ?>
