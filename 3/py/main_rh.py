@@ -183,7 +183,8 @@ def read_plc_data():
         cols_2 = {
             "data2": "data11",
             "data3": "data12",
-            "data4": "data13"
+            "data4": "data13",
+            "data5": "data18"
         }
 
         # update data - 2
@@ -260,14 +261,14 @@ def read_plc_data():
 
 # 업데이트가 중지된 동안 새로운 scan값이 들어오는지 관찰하는 메소드
 def check_new_data():
-    # 가장 최근 데이터의 DATA1 - DATA6, DATA11 - DATA13의 값이 None 타입일 때 새로운 scan값이 들어온 것으로 간주
+    # 가장 최근 데이터의 DATA1 - DATA6, DATA11 - DATA13, DATA18의 값이 None 타입일 때 새로운 scan값이 들어온 것으로 간주
     db = mysql.connector.connect(**assy_db_config)
     cursor = db.cursor(dictionary = True)
 
     if db.is_connected():
         print("Assy DB Connected... (For checking new INSERT)")
 
-    query = "SELECT data1, data2, data3, data4, data5, data6, data11, data12, data13 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
+    query = "SELECT data1, data2, data3, data4, data5, data6, data11, data12, data13, data18 FROM assy_rh ORDER BY date DESC, time DESC LIMIT 1"
     cursor.execute(query)
     record = cursor.fetchone()
 
