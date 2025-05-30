@@ -86,9 +86,10 @@
                                 </div>
                             </div>
 
-                            <div class = "row">
+                            <div class = "leg_row">
                                 <div class = "label">
-                                    <span>틸팅 후방</span>
+                                    <span id = "leg_span1">레그 사출</span>
+                                    <span id = "leg_span2">(오동작/누락)</span>
                                 </div>
 
                                 <div class = "value">
@@ -98,7 +99,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>틸팅 전방</span>
+                                    <span>틸팅 후방</span>
                                 </div>
 
                                 <div class = "value">
@@ -108,7 +109,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>틸팅 원점</span>
+                                    <span>틸팅 전방</span>
                                 </div>
 
                                 <div class = "value">
@@ -118,7 +119,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>레그 사출</span>
+                                    <span>틸팅 원점</span>
                                 </div>
 
                                 <div class = "value">
@@ -224,11 +225,12 @@
                                 </div>
                             </div>
 
-                            <div class = "row">
+                            <div class = "leg_row">
                                 <div class = "label">
-                                    <span>틸팅 후방</span>
+                                    <span id = "leg_span3">레그 사출</span>
+                                    <span id = "leg_span4">(오동작/누락)</span>
                                 </div>
-
+    
                                 <div class = "value">
                                     <span id = "data6_rh"></span>
                                 </div>
@@ -236,7 +238,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>틸팅 전방</span>
+                                    <span>틸팅 후방</span>
                                 </div>
 
                                 <div class = "value">
@@ -246,7 +248,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>틸팅 원점</span>
+                                    <span>틸팅 전방</span>
                                 </div>
 
                                 <div class = "value">
@@ -256,7 +258,7 @@
 
                             <div class = "row">
                                 <div class = "label">
-                                    <span>레그 사출</span>
+                                    <span>틸팅 원점</span>
                                 </div>
 
                                 <div class = "value">
@@ -415,8 +417,8 @@
                             let idRH = "data" + i + "_rh";
 
                             if(dataRH[i] == 1){
-                                if(i >= 6 && i <= 8){
-                                    tilt = parseInt(tiltRH[i - 6]);
+                                if(i >= 7 && i <= 9){
+                                    tilt = parseInt(tiltRH[i - 7]);
                                     $("#" + idRH).text(tilt / 10);
                                 }else{
                                     $("#" + idRH).text("OK");
@@ -424,8 +426,8 @@
 
                                 $("#" + idRH).parent().css("background-color", "green");
                             }else if(dataRH[i] == 2){
-                                if(i >= 6 && i <= 8){
-                                    tilt = parseInt(tiltRH[i - 6]);
+                                if(i >= 7 && i <= 9){
+                                    tilt = parseInt(tiltRH[i - 7]);
                                     $("#" + idRH).text(tilt / 10);
                                 }else{
                                     $("#" + idRH).text("NG");

@@ -43,5 +43,5 @@
     $result -> close();
     $conn -> close();
 
-    echo json_encode($data);
+    echo json_encode($return_data);
 ?>
